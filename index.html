@@ -2,251 +2,351 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Luxe Prospect">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#0A0A0A">
+<meta name="theme-color" content="#0D1117">
 <title>Luxe Prospect</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap');
-:root {
-  --gold:#C9A96E; --black:#0A0A0A; --dark:#0F0F0F; --card:#181818;
-  --card2:#1F1F1F; --card3:#252525; --border:rgba(201,169,110,0.16);
-  --blight:rgba(255,255,255,0.06); --text:#F2F0EB; --muted:#888580;
-  --dim:#555250; --green:#48BB78; --red:#E05252; --amber:#EDA830;
-  --blue:#5599D0; --purple:#9875C5;
-  --it:env(safe-area-inset-top,44px); --ib:env(safe-area-inset-bottom,34px);
-  --il:env(safe-area-inset-left,0px); --ir:env(safe-area-inset-right,0px);
-  --tabH:56px;
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+/* ── THEME VARIABLES ── */
+[data-theme="dark"] {
+  --bg:#0D1117; --bg2:#161B22; --bg3:#1C2128; --bg4:#21262D;
+  --card:#161B22; --card2:#1C2128; --card3:#21262D;
+  --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.04);
+  --text:#F0F6FC; --text2:#C9D1D9; --muted:#8B949E; --dim:#484F58;
+  --gold:#D4A843; --gold2:#B8913A; --gold-bg:rgba(212,168,67,0.12);
+  --green:#3FB950; --green-bg:rgba(63,185,80,0.12);
+  --red:#F85149; --red-bg:rgba(248,81,73,0.12);
+  --blue:#388BFD; --blue-bg:rgba(56,139,253,0.12);
+  --purple:#BC8CFF; --purple-bg:rgba(188,140,255,0.12);
+  --amber:#E3B341; --amber-bg:rgba(227,179,65,0.12);
+  --teal:#26C6DA; --teal-bg:rgba(38,198,218,0.1);
+  --orange:#F0883E; --orange-bg:rgba(240,136,62,0.12);
+  --topbar-bg:rgba(13,17,23,0.94);
+  --tab-bg:rgba(13,17,23,0.96);
+  --shadow:0 8px 32px rgba(0,0,0,0.4);
 }
+[data-theme="light"] {
+  --bg:#F5F7FA; --bg2:#FFFFFF; --bg3:#F0F2F5; --bg4:#E8EBF0;
+  --card:#FFFFFF; --card2:#F8F9FA; --card3:#EEF0F3;
+  --border:rgba(0,0,0,0.08); --border2:rgba(0,0,0,0.04);
+  --text:#1A1D23; --text2:#3D4149; --muted:#6B7280; --dim:#A0A7B4;
+  --gold:#B8771A; --gold2:#9A6315; --gold-bg:rgba(184,119,26,0.1);
+  --green:#1A7F37; --green-bg:rgba(26,127,55,0.1);
+  --red:#CF222E; --red-bg:rgba(207,34,46,0.1);
+  --blue:#0969DA; --blue-bg:rgba(9,105,218,0.1);
+  --purple:#8250DF; --purple-bg:rgba(130,80,223,0.1);
+  --amber:#9A6700; --amber-bg:rgba(154,103,0,0.1);
+  --teal:#0598A7; --teal-bg:rgba(5,152,167,0.1);
+  --orange:#BC4C00; --orange-bg:rgba(188,76,0,0.1);
+  --topbar-bg:rgba(245,247,250,0.94);
+  --tab-bg:rgba(255,255,255,0.96);
+  --shadow:0 4px 20px rgba(0,0,0,0.1);
+}
+
+/* ── RESET ── */
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;}
-html{height:100%;height:-webkit-fill-available;background:var(--black);}
-body{font-family:'DM Sans',-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;background:var(--black);color:var(--text);height:100%;height:-webkit-fill-available;overflow:hidden;position:fixed;width:100%;top:0;left:0;-webkit-font-smoothing:antialiased;}
+html{height:100%;height:-webkit-fill-available;background:var(--bg);}
+body{font-family:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);height:100%;height:-webkit-fill-available;overflow:hidden;position:fixed;width:100%;top:0;left:0;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s;}
+
+/* ── LAYOUT ── */
 #app{display:flex;flex-direction:column;height:100%;height:-webkit-fill-available;}
-/* TOPBAR */
-#topbar{background:rgba(15,15,15,0.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:0.5px solid var(--border);padding-top:calc(var(--it) + 10px);padding-bottom:12px;padding-left:calc(var(--il) + 16px);padding-right:calc(var(--ir) + 16px);display:flex;align-items:center;gap:10px;flex-shrink:0;z-index:50;}
-.tb-brand{flex:1;font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--gold);line-height:1;}
-.tb-brand small{display:block;font-family:'DM Sans',sans-serif;font-size:9.5px;color:var(--dim);letter-spacing:1.8px;text-transform:uppercase;font-weight:600;margin-top:2px;}
-.tb-title{flex:1;font-size:16px;font-weight:600;color:var(--text);text-align:center;}
-.tb-back{background:none;border:none;color:var(--gold);font-size:15px;font-weight:500;font-family:'DM Sans',sans-serif;padding:6px 4px;cursor:pointer;display:flex;align-items:center;gap:2px;flex-shrink:0;white-space:nowrap;}
-.tb-back:active{opacity:.6;}
-.tb-add{width:34px;height:34px;border-radius:50%;background:var(--gold);border:none;color:var(--black);font-size:22px;font-weight:300;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.tb-add:active{opacity:.8;transform:scale(.93);}
-/* SCROLL */
-#scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;background:var(--dark);}
-/* TABS */
-#tabs{background:rgba(15,15,15,0.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:0.5px solid var(--border);display:flex;align-items:stretch;height:calc(var(--tabH) + var(--ib));padding-bottom:var(--ib);flex-shrink:0;z-index:50;}
-.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:8px 4px 4px;cursor:pointer;position:relative;-webkit-user-select:none;}
+#topbar{background:var(--topbar-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:0.5px solid var(--border);padding-top:calc(env(safe-area-inset-top,44px) + 10px);padding-bottom:12px;padding-left:calc(env(safe-area-inset-left,0px) + 16px);padding-right:calc(env(safe-area-inset-right,0px) + 16px);display:flex;align-items:center;gap:10px;flex-shrink:0;z-index:50;}
+#scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;background:var(--bg);}
+#tabs{background:var(--tab-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:0.5px solid var(--border);display:flex;align-items:stretch;height:calc(56px + env(safe-area-inset-bottom,34px));padding-bottom:env(safe-area-inset-bottom,34px);flex-shrink:0;z-index:50;}
+
+/* ── TAB BAR ── */
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:8px 2px 4px;cursor:pointer;position:relative;-webkit-user-select:none;}
 .tab:active{opacity:.65;}
-.tab-icon{font-size:22px;line-height:1;}
-.tab-txt{font-size:10px;color:var(--dim);font-weight:500;}
+.tab-icon{font-size:22px;line-height:1;transition:transform .15s;}
+.tab-txt{font-size:9.5px;color:var(--muted);font-weight:500;letter-spacing:.2px;}
 .tab.on .tab-txt{color:var(--gold);}
-.tab.on .tab-icon{transform:scale(1.08);}
-.tab-dot{position:absolute;top:6px;right:calc(50% - 16px);background:var(--red);color:#fff;font-size:9px;font-weight:700;min-width:15px;height:15px;padding:0 4px;border-radius:8px;display:flex;align-items:center;justify-content:center;}
-.tab-dot.g{background:var(--gold);color:var(--black);}
-/* STATS */
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 16px 10px;}
-.sc{background:var(--card);border:0.5px solid var(--blight);border-radius:16px;padding:14px;position:relative;overflow:hidden;cursor:pointer;}
-.sc:active{opacity:.85;}
-.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:16px 16px 0 0;}
-.sc.g::before{background:linear-gradient(90deg,var(--gold),transparent);}
-.sc.b::before{background:linear-gradient(90deg,var(--blue),transparent);}
-.sc.gr::before{background:linear-gradient(90deg,var(--green),transparent);}
-.sc.a::before{background:linear-gradient(90deg,var(--amber),transparent);}
-.sc.r::before{background:linear-gradient(90deg,var(--red),transparent);}
-.sc-lbl{font-size:9.5px;color:var(--dim);text-transform:uppercase;letter-spacing:1.2px;font-weight:700;margin-bottom:7px;}
-.sc-val{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--text);line-height:1;margin-bottom:3px;}
-.sc-sub{font-size:11px;color:var(--muted);}
-.sc-arrow{position:absolute;top:14px;right:14px;color:var(--gold);font-size:14px;opacity:.6;}
-/* CARD BLOCK */
-.cblock{background:var(--card);border-top:0.5px solid var(--blight);border-bottom:0.5px solid var(--blight);margin-bottom:10px;}
-/* PROP ROW */
-.prop-row{display:flex;align-items:center;gap:12px;padding:13px 16px;background:var(--card);border-bottom:0.5px solid var(--blight);position:relative;overflow:hidden;}
-.prop-row-inner{display:flex;align-items:center;gap:12px;flex:1;min-width:0;cursor:pointer;-webkit-user-select:none;}
-.prop-row-inner:active{opacity:.8;}
-.prop-icon{width:38px;height:38px;border-radius:10px;background:var(--card2);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
-.prop-body{flex:1;min-width:0;}
-.prop-addr{font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;}
-.prop-name{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px;}
-.prop-meta{display:flex;align-items:center;gap:7px;}
-.prop-chevron{color:var(--dim);font-size:16px;flex-shrink:0;}
-/* SWIPE ACTIONS - behind the row */
+.tab.on .tab-icon{transform:scale(1.1);}
+.tab-dot{position:absolute;top:5px;right:calc(50% - 18px);background:var(--red);color:#fff;font-size:9px;font-weight:700;min-width:16px;height:16px;padding:0 4px;border-radius:8px;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--bg);}
+.tab-dot.g{background:var(--gold);color:#000;}
+
+/* ── TOPBAR ELEMENTS ── */
+.tb-brand{flex:1;}
+.tb-brand-name{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--gold);letter-spacing:.3px;}
+.tb-brand-sub{font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;font-weight:600;}
+.tb-title{flex:1;font-size:17px;font-weight:700;color:var(--text);}
+.tb-back{background:none;border:none;color:var(--blue);font-size:16px;font-weight:500;font-family:'DM Sans',sans-serif;padding:6px 0;cursor:pointer;display:flex;align-items:center;gap:3px;flex-shrink:0;white-space:nowrap;}
+.tb-back:active{opacity:.6;}
+.tb-btn{width:34px;height:34px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;transition:transform .1s;}
+.tb-btn:active{transform:scale(.9);}
+.tb-btn-add{background:var(--gold);color:#000;font-size:20px;font-weight:400;}
+.tb-btn-theme{background:var(--card2);color:var(--text2);border:0.5px solid var(--border);}
+.tb-btn-edit{background:none;border:none;color:var(--blue);font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;padding:6px;}
+
+/* ── CARDS & SECTIONS ── */
+.page-section{background:var(--card);border-radius:14px;margin:0 16px 14px;overflow:hidden;border:0.5px solid var(--border);}
+.section-hdr{padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between;}
+.section-lbl{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.3px;}
+.section-link{font-size:13px;color:var(--blue);font-weight:600;background:none;border:none;font-family:'DM Sans',sans-serif;cursor:pointer;}
+.section-link:active{opacity:.6;}
+
+/* ── STAT CARDS ── */
+.stats-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 16px 10px;}
+.stat-card{background:var(--card);border:0.5px solid var(--border);border-radius:16px;padding:16px;cursor:pointer;transition:transform .1s;position:relative;overflow:hidden;}
+.stat-card:active{transform:scale(.97);}
+.stat-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:16px 16px 0 0;}
+.stat-gold::after{background:linear-gradient(90deg,var(--gold),transparent);}
+.stat-blue::after{background:linear-gradient(90deg,var(--blue),transparent);}
+.stat-green::after{background:linear-gradient(90deg,var(--green),transparent);}
+.stat-amber::after{background:linear-gradient(90deg,var(--amber),transparent);}
+.stat-purple::after{background:linear-gradient(90deg,var(--purple),transparent);}
+.stat-teal::after{background:linear-gradient(90deg,var(--teal),transparent);}
+.stat-lbl{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px;}
+.stat-val{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;color:var(--text);line-height:1;margin-bottom:4px;}
+.stat-sub{font-size:11px;color:var(--muted);}
+.stat-arrow{position:absolute;top:14px;right:14px;color:var(--muted);font-size:13px;}
+
+/* ── LIST ROWS ── */
+.list-row{display:flex;align-items:center;gap:12px;padding:13px 16px;background:var(--card);border-bottom:0.5px solid var(--border2);position:relative;overflow:hidden;}
+.list-row:last-child{border-bottom:none;}
+.list-row:active{background:var(--card2);}
+.list-row-inner{display:flex;align-items:center;gap:12px;flex:1;min-width:0;cursor:pointer;}
+
+.row-avatar{width:44px;height:44px;border-radius:12px;background:var(--card2);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;overflow:hidden;position:relative;}
+.row-avatar.color-1{background:linear-gradient(135deg,#667EEA,#764BA2);}
+.row-avatar.color-2{background:linear-gradient(135deg,#43E97B,#38F9D7);}
+.row-avatar.color-3{background:linear-gradient(135deg,#FA709A,#FEE140);}
+.row-avatar.color-4{background:linear-gradient(135deg,#4FACFE,#00F2FE);}
+.row-avatar.color-5{background:linear-gradient(135deg,#F093FB,#F5576C);}
+.row-avatar-initials{color:#fff;font-size:16px;font-weight:700;}
+
+.row-body{flex:1;min-width:0;}
+.row-title{font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;}
+.row-sub{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:5px;}
+.row-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.row-time{font-size:11px;color:var(--dim);}
+.row-chevron{color:var(--dim);font-size:16px;flex-shrink:0;}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:10.5px;font-weight:700;white-space:nowrap;letter-spacing:.3px;}
+.b-hot{background:var(--orange-bg);color:var(--orange);border:0.5px solid var(--orange);}
+.b-uncontacted{background:var(--card3);color:var(--muted);}
+.b-voicemail{background:var(--blue-bg);color:var(--blue);}
+.b-no_answer{background:var(--amber-bg);color:var(--amber);}
+.b-callback{background:var(--gold-bg);color:var(--gold);}
+.b-interested{background:var(--green-bg);color:var(--green);}
+.b-not_interested{background:var(--red-bg);color:var(--red);}
+.b-appointment{background:var(--purple-bg);color:var(--purple);}
+.b-sold{background:var(--gold-bg);color:var(--gold);}
+.b-pipeline{background:var(--teal-bg);color:var(--teal);}
+.b-upsizer{background:var(--blue-bg);color:var(--blue);}
+.b-downsizer{background:var(--green-bg);color:var(--green);}
+.b-investor{background:var(--purple-bg);color:var(--purple);}
+.b-no_data{background:var(--card3);color:var(--dim);}
+
+/* ── SWIPE ── */
 .swipe-wrap{position:relative;overflow:hidden;}
-.swipe-actions{position:absolute;right:0;top:0;bottom:0;display:flex;align-items:stretch;transform:translateX(100%);}
-.swipe-action-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 16px;cursor:pointer;font-size:11px;font-weight:600;gap:4px;min-width:64px;}
-.swipe-action-btn .sai{font-size:20px;}
-.sa-edit{background:#3A82E8;color:#fff;}
-.sa-hot{background:#E85C3A;color:#fff;}
-.sa-delete{background:var(--red);color:#fff;}
-.sa-archive{background:var(--muted);color:#fff;}
-.sa-reschedule{background:var(--purple);color:#fff;}
-/* BADGE */
-.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:10.5px;font-weight:600;white-space:nowrap;}
-.un{background:rgba(85,82,80,.3);color:#888;}
-.vm{background:rgba(85,153,208,.2);color:var(--blue);}
-.na{background:rgba(237,168,48,.2);color:var(--amber);}
-.cb{background:rgba(201,169,110,.2);color:var(--gold);}
-.it{background:rgba(72,187,120,.22);color:var(--green);}
-.ni{background:rgba(224,82,82,.18);color:var(--red);}
-.ap{background:rgba(152,117,197,.22);color:var(--purple);}
-.so{background:rgba(201,169,110,.28);color:#E8D5B0;}
-.se{background:rgba(85,153,208,.18);color:var(--blue);}
-.nd{background:rgba(40,40,40,.5);color:var(--dim);}
-.hot-badge{background:rgba(232,92,58,.18);color:#FF7A5A;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;}
-/* SEARCH */
-.search-wrap{background:var(--card);border-bottom:0.5px solid var(--blight);padding:12px 16px;}
-.search-inner{background:var(--card2);border:0.5px solid var(--blight);border-radius:12px;display:flex;align-items:center;gap:8px;padding:10px 14px;}
+.swipe-actions{position:absolute;right:0;top:0;bottom:0;display:flex;align-items:stretch;}
+.sw-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 16px;cursor:pointer;font-size:11px;font-weight:700;gap:5px;min-width:72px;}
+.sw-btn .swi{font-size:22px;}
+.sw-edit{background:#1F6FEB;color:#fff;}
+.sw-hot{background:#E36209;color:#fff;}
+.sw-call{background:var(--green);color:#fff;}
+.sw-archive{background:#6E7681;color:#fff;}
+.sw-delete{background:#DA3633;color:#fff;}
+.sw-reschedule{background:var(--purple);color:#fff;}
+
+/* ── SEARCH ── */
+.search-bar{background:var(--card);border-bottom:0.5px solid var(--border);padding:10px 16px;}
+.search-inner{background:var(--card2);border:0.5px solid var(--border);border-radius:12px;display:flex;align-items:center;gap:9px;padding:10px 14px;}
 .search-inner input{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;min-width:0;-webkit-appearance:none;}
 .search-inner input::placeholder{color:var(--dim);}
-/* CHIPS */
-.chips{display:flex;gap:7px;padding:10px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch;background:var(--card);border-bottom:0.5px solid var(--blight);scrollbar-width:none;}
-.chips::-webkit-scrollbar{display:none;}
-.chip{padding:6px 13px;border-radius:20px;font-size:12.5px;font-weight:500;white-space:nowrap;cursor:pointer;border:0.5px solid var(--blight);background:var(--card2);color:var(--muted);flex-shrink:0;}
+.search-icon{color:var(--muted);font-size:17px;flex-shrink:0;}
+.search-clear{color:var(--muted);font-size:17px;flex-shrink:0;cursor:pointer;padding:2px;}
+
+/* ── CHIPS / FILTER ── */
+.chip-row{display:flex;gap:8px;padding:10px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch;background:var(--card);border-bottom:0.5px solid var(--border);scrollbar-width:none;}
+.chip-row::-webkit-scrollbar{display:none;}
+.chip{padding:6px 14px;border-radius:20px;font-size:12.5px;font-weight:500;white-space:nowrap;cursor:pointer;border:0.5px solid var(--border);background:var(--card2);color:var(--muted);flex-shrink:0;-webkit-user-select:none;}
 .chip:active{opacity:.7;}
-.chip.on{background:var(--gold);color:var(--black);border-color:var(--gold);font-weight:600;}
-/* DETAIL */
-.det-hero{background:linear-gradient(160deg,#1C1814 0%,#181510 100%);padding:18px 16px 16px;border-bottom:0.5px solid var(--border);}
-.det-addr{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--text);margin-bottom:6px;line-height:1.3;}
-.det-sub{font-size:13px;color:var(--muted);margin-bottom:12px;}
-/* 4-BTN GRID */
-.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 16px;}
-.act-btn{background:var(--card);border:0.5px solid var(--blight);border-radius:14px;padding:16px 10px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;-webkit-appearance:none;font-family:'DM Sans',sans-serif;transition:transform .1s;}
-.act-btn:active{transform:scale(.95);opacity:.8;}
-.act-btn.cl{border-color:rgba(72,187,120,.3);background:rgba(72,187,120,.06);}
-.act-btn.sm{border-color:rgba(85,153,208,.3);background:rgba(85,153,208,.06);}
-.act-btn.em{border-color:rgba(237,168,48,.3);background:rgba(237,168,48,.06);}
-.act-btn.nt{border-color:rgba(152,117,197,.3);background:rgba(152,117,197,.06);}
-.act-btn .ai{font-size:28px;line-height:1;}
-.act-btn .al{font-size:12.5px;font-weight:600;color:var(--muted);}
-/* INFO ROWS */
-.info-blk{padding:14px 16px;border-bottom:0.5px solid var(--blight);}
-.info-blk-ttl{font-size:10.5px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1.4px;margin-bottom:12px;}
-.info-r{display:flex;align-items:flex-start;gap:12px;padding:6px 0;border-bottom:0.5px solid rgba(255,255,255,.03);}
-.info-r:last-child{border-bottom:none;}
-.ir-lbl{font-size:11px;color:var(--dim);font-weight:600;text-transform:uppercase;letter-spacing:.5px;min-width:56px;padding-top:2px;}
-.ir-val{font-size:14px;color:var(--text);flex:1;}
-.ir-val a{color:var(--gold);text-decoration:none;}
-/* STATUS ROW */
-.status-row{display:flex;align-items:center;gap:12px;padding:13px 16px;background:var(--card2);border-top:0.5px solid var(--blight);border-bottom:0.5px solid var(--blight);margin-bottom:2px;}
-.status-row select{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;-webkit-appearance:none;}
-.status-row-lbl{font-size:11.5px;color:var(--dim);font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
-/* TIMELINE */
-.tl-item{display:flex;gap:12px;padding:12px 16px;border-bottom:0.5px solid var(--blight);}
-.tl-dot{width:34px;height:34px;border-radius:50%;background:var(--card2);border:0.5px solid var(--blight);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
-.tl-body{flex:1;min-width:0;}
-.tl-type{font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:2px;}
-.tl-time{font-size:11.5px;color:var(--dim);margin-bottom:5px;}
-.tl-note{font-size:13px;color:var(--muted);background:var(--card2);border-left:2px solid var(--border);padding:8px 12px;border-radius:0 8px 8px 0;font-style:italic;line-height:1.5;}
-/* MODAL SHEET */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:999;display:flex;align-items:flex-end;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);}
-.sheet{background:var(--card);border-top:0.5px solid var(--border);border-radius:20px 20px 0 0;width:100%;max-height:93vh;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--ib) + 10px);padding-left:var(--il);padding-right:var(--ir);}
-.sh-handle{width:36px;height:4px;background:rgba(255,255,255,.15);border-radius:2px;margin:10px auto 6px;}
-.sh-hdr{padding:6px 18px 14px;border-bottom:0.5px solid var(--blight);display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
-.sh-ttl{font-family:'Playfair Display',serif;font-size:19px;font-weight:600;color:var(--text);}
-.sh-sub{font-size:12.5px;color:var(--dim);margin-top:3px;}
-.sh-close{width:30px;height:30px;border-radius:50%;background:var(--card2);border:0.5px solid var(--blight);color:var(--muted);font-size:15px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;-webkit-appearance:none;}
-.sh-close:active{opacity:.7;}
-.sh-body{padding:18px;}
-.sh-foot{padding:12px 18px;display:flex;gap:10px;}
-/* FORMS */
+.chip.on{background:var(--gold);color:#000;border-color:var(--gold);font-weight:700;}
+
+/* ── SEGMENT CONTROL ── */
+.segment{display:flex;background:var(--card2);border-radius:12px;padding:3px;margin:12px 16px;gap:2px;}
+.seg-btn{flex:1;padding:8px;border-radius:9px;font-size:13px;font-weight:600;text-align:center;cursor:pointer;color:var(--muted);border:none;background:none;font-family:'DM Sans',sans-serif;-webkit-appearance:none;}
+.seg-btn.on{background:var(--bg2);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,0.2);}
+
+/* ── MODAL SHEET ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:999;display:flex;align-items:flex-end;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);}
+.sheet{background:var(--card);border-top:0.5px solid var(--border);border-radius:22px 22px 0 0;width:100%;max-height:93vh;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(env(safe-area-inset-bottom,34px) + 10px);}
+.sh-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:12px auto 6px;}
+.sh-hdr{padding:4px 18px 16px;border-bottom:0.5px solid var(--border2);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+.sh-ttl{font-size:20px;font-weight:700;color:var(--text);}
+.sh-sub{font-size:13px;color:var(--muted);margin-top:3px;}
+.sh-close{width:32px;height:32px;border-radius:50%;background:var(--card2);border:0.5px solid var(--border);color:var(--muted);font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-appearance:none;flex-shrink:0;}
+.sh-body{padding:18px 18px 6px;}
+.sh-foot{padding:12px 18px 0;display:flex;gap:10px;}
+
+/* ── FORMS ── */
 .fg{margin-bottom:16px;}
-.fl{display:block;font-size:11px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;}
-.fi,.fsel,.fta{width:100%;background:var(--card2);border:0.5px solid var(--blight);border-radius:12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;padding:12px 14px;outline:none;-webkit-appearance:none;transition:border-color .15s;}
+.fl{display:block;font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px;}
+.fi,.fsel,.fta{width:100%;background:var(--card2);border:0.5px solid var(--border);border-radius:12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;padding:12px 14px;outline:none;-webkit-appearance:none;transition:border-color .15s;}
 .fi:focus,.fsel:focus,.fta:focus{border-color:var(--gold);}
 .fta{resize:none;line-height:1.5;}
 .frow{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-/* BUTTONS */
-.btn{padding:13px 18px;border-radius:13px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;border:none;-webkit-appearance:none;display:flex;align-items:center;justify-content:center;gap:6px;}
-.btn:active{opacity:.8;transform:scale(.97);}
-.btn-g{background:var(--gold);color:var(--black);flex:1;}
-.btn-o{background:var(--card2);border:0.5px solid var(--blight);color:var(--muted);padding:13px 16px;}
-.btn-r{background:var(--red);color:#fff;flex:1;}
-.btn-grn{background:var(--green);color:#fff;flex:1;}
-/* OUTCOMES */
-.oc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
-.oc{padding:11px 6px;background:var(--card2);border:1.5px solid var(--blight);border-radius:12px;text-align:center;cursor:pointer;-webkit-appearance:none;transition:border-color .12s,background .12s;}
-.oc:active{transform:scale(.94);}
-.oc.on{border-color:var(--gold);background:rgba(201,169,110,.1);}
-.oc .oi{font-size:20px;display:block;margin-bottom:4px;}
-.oc .ol{font-size:11px;font-weight:600;color:var(--muted);}
-.oc.on .ol{color:var(--gold);}
-/* SMS TEMPLATES */
-.sms-t{background:var(--card2);border:1.5px solid var(--blight);border-radius:12px;padding:12px 14px;margin-bottom:9px;cursor:pointer;}
-.sms-t.on{border-color:var(--gold);background:rgba(201,169,110,.07);}
-.sms-t-nm{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;}
-.sms-t-pv{font-size:12px;color:var(--muted);line-height:1.5;}
-/* CALL BANNER */
-.call-banner{display:flex;align-items:center;gap:14px;background:rgba(72,187,120,.08);border:0.5px solid rgba(72,187,120,.28);border-radius:14px;padding:14px 16px;margin-bottom:16px;text-decoration:none;}
-.call-info{flex:1;}
-.call-who{font-size:12px;color:var(--dim);display:block;margin-bottom:2px;}
-.call-num{font-family:monospace;font-size:19px;color:var(--green);font-weight:600;}
-.call-dial{background:var(--green);color:#fff;padding:10px 18px;border-radius:11px;font-size:14px;font-weight:700;white-space:nowrap;}
-/* APPT CARD */
-.appt-r{display:flex;align-items:flex-start;gap:12px;padding:13px 16px;background:var(--card);border-bottom:0.5px solid var(--blight);position:relative;overflow:hidden;}
-.appt-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:5px;}
-.appt-dot.cf{background:var(--green);box-shadow:0 0 6px rgba(72,187,120,.5);}
-.appt-dot.cx{background:var(--red);}
-.appt-dot.arch{background:var(--dim);}
-.appt-body{flex:1;min-width:0;}
-.appt-addr{font-size:13.5px;font-weight:600;color:var(--text);}
-.appt-nm{font-size:12.5px;color:var(--muted);margin-top:2px;}
-.appt-dt{font-size:11.5px;color:var(--dim);margin-top:3px;}
-.ibt{width:36px;height:36px;border-radius:10px;background:var(--card2);border:0.5px solid var(--blight);display:flex;align-items:center;justify-content:center;font-size:17px;cursor:pointer;flex-shrink:0;-webkit-appearance:none;}
+
+/* ── BUTTONS ── */
+.btn{padding:14px 18px;border-radius:13px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;border:none;-webkit-appearance:none;display:flex;align-items:center;justify-content:center;gap:7px;transition:transform .1s,opacity .1s;}
+.btn:active{transform:scale(.97);opacity:.85;}
+.btn-gold{background:var(--gold);color:#000;flex:1;}
+.btn-ghost{background:var(--card2);border:0.5px solid var(--border);color:var(--text2);padding:14px 16px;}
+.btn-red{background:var(--red);color:#fff;flex:1;}
+.btn-green{background:var(--green);color:#fff;flex:1;}
+.btn-blue{background:var(--blue);color:#fff;flex:1;}
+.btn-sm{padding:9px 14px;font-size:13px;border-radius:10px;}
+
+/* ── ICON BTN ── */
+.ibt{width:38px;height:38px;border-radius:10px;background:var(--card2);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;-webkit-appearance:none;flex-shrink:0;}
 .ibt:active{background:var(--card3);}
-/* PROGRESS */
-.pr{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:0.5px solid rgba(255,255,255,.02);}
-.pr:last-child{border-bottom:none;}
-.pr-lbl{font-size:12.5px;color:var(--muted);flex:1;cursor:pointer;}
-.pr-bar{flex:2;height:3.5px;background:var(--card3);border-radius:2px;overflow:hidden;}
-.pr-fill{height:100%;border-radius:2px;}
-.pr-num{font-size:11.5px;color:var(--dim);min-width:26px;text-align:right;font-variant-numeric:tabular-nums;}
-/* STREET ROW */
-.street-r{display:flex;align-items:center;gap:12px;padding:13px 16px;background:var(--card);border-bottom:0.5px solid var(--blight);cursor:pointer;}
-.street-r:active{background:var(--card2);}
-/* EMPTY */
-.empty{text-align:center;padding:64px 24px;}
-.empty-ico{font-size:46px;opacity:.25;margin-bottom:14px;}
-.empty-ttl{font-size:16px;font-weight:600;color:var(--muted);margin-bottom:8px;}
-.empty-sub{font-size:13.5px;color:var(--dim);line-height:1.6;}
-/* STICKY HDR */
-.sticky-hdr{padding:10px 16px 7px;font-size:10.5px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:1.5px;background:var(--dark);border-bottom:0.5px solid var(--blight);position:sticky;top:0;z-index:5;}
-/* TOAST */
-#toast{position:fixed;bottom:calc(var(--tabH) + var(--ib) + 12px);left:16px;right:16px;background:var(--card);border:0.5px solid var(--border);border-radius:14px;padding:13px 16px;font-size:14px;color:var(--text);box-shadow:0 6px 24px rgba(0,0,0,.55);display:flex;align-items:center;gap:8px;z-index:9999;transform:translateY(12px);opacity:0;transition:all .25s cubic-bezier(.34,1.56,.64,1);pointer-events:none;}
+
+/* ── CALL OUTCOME GRID ── */
+.oc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
+.oc{padding:12px 4px;background:var(--card2);border:1.5px solid var(--border);border-radius:12px;text-align:center;cursor:pointer;-webkit-appearance:none;}
+.oc:active{transform:scale(.93);}
+.oc.on{border-color:var(--gold);background:var(--gold-bg);}
+.oc-icon{font-size:22px;display:block;margin-bottom:4px;}
+.oc-lbl{font-size:11px;font-weight:700;color:var(--muted);}
+.oc.on .oc-lbl{color:var(--gold);}
+
+/* ── SMS TEMPLATE ── */
+.sms-tmpl{background:var(--card2);border:1.5px solid var(--border);border-radius:12px;padding:13px 15px;margin-bottom:10px;cursor:pointer;}
+.sms-tmpl.on{border-color:var(--gold);background:var(--gold-bg);}
+.sms-tmpl-name{font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.sms-tmpl-prev{font-size:12px;color:var(--muted);line-height:1.5;}
+
+/* ── CALL BANNER ── */
+.call-banner{display:flex;align-items:center;gap:14px;background:var(--green-bg);border:0.5px solid var(--green);border-radius:14px;padding:14px 16px;margin-bottom:16px;text-decoration:none;}
+.call-banner-info{flex:1;}
+.call-who{font-size:11.5px;color:var(--muted);display:block;margin-bottom:2px;}
+.call-num{font-family:monospace;font-size:20px;color:var(--green);font-weight:700;}
+.call-dial{background:var(--green);color:#fff;padding:11px 20px;border-radius:12px;font-size:14px;font-weight:700;white-space:nowrap;}
+
+/* ── TIMELINE ── */
+.tl{display:flex;gap:12px;padding:12px 0;border-bottom:0.5px solid var(--border2);}
+.tl:last-child{border-bottom:none;}
+.tl-dot{width:36px;height:36px;border-radius:50%;background:var(--card2);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.tl-body{flex:1;min-width:0;}
+.tl-type{font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.tl-time{font-size:11.5px;color:var(--dim);}
+.tl-note{font-size:13px;color:var(--muted);background:var(--card2);border-left:2.5px solid var(--gold);padding:8px 12px;border-radius:0 8px 8px 0;margin-top:7px;font-style:italic;line-height:1.5;}
+
+/* ── SMART CALL LIST ── */
+.smart-call-hdr{padding:16px;background:var(--blue-bg);border-bottom:0.5px solid var(--border);}
+.smart-call-title{font-size:22px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.smart-call-sub{font-size:13px;color:var(--muted);}
+.call-progress{background:var(--card2);border-radius:8px;padding:10px 14px;margin:12px 0;display:flex;align-items:center;justify-content:space-between;}
+.call-prog-lbl{font-size:12px;color:var(--muted);font-weight:600;}
+.call-prog-val{font-size:14px;color:var(--blue);font-weight:700;}
+
+/* ── DETAIL HERO ── */
+.det-hero{background:linear-gradient(160deg,var(--card) 0%,var(--card2) 100%);padding:20px 16px 16px;border-bottom:0.5px solid var(--border);}
+.det-addr{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--text);margin-bottom:6px;line-height:1.3;}
+.det-sub{font-size:13px;color:var(--muted);margin-bottom:14px;}
+
+/* ── ACTION ROW 4-GRID ── */
+.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 16px;}
+.act-btn{background:var(--card2);border:0.5px solid var(--border);border-radius:16px;padding:18px 10px;display:flex;flex-direction:column;align-items:center;gap:9px;cursor:pointer;-webkit-appearance:none;transition:transform .1s;}
+.act-btn:active{transform:scale(.94);opacity:.85;}
+.act-btn.cl{border-color:var(--green);background:var(--green-bg);}
+.act-btn.sm{border-color:var(--blue);background:var(--blue-bg);}
+.act-btn.em{border-color:var(--amber);background:var(--amber-bg);}
+.act-btn.nt{border-color:var(--purple);background:var(--purple-bg);}
+.act-btn-icon{font-size:28px;line-height:1;}
+.act-btn-lbl{font-size:12.5px;font-weight:700;color:var(--muted);}
+
+/* ── INFO SECTION ── */
+.info-blk{padding:16px;}
+.info-blk-ttl{font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px;}
+.info-r{display:flex;align-items:flex-start;gap:14px;padding:8px 0;border-bottom:0.5px solid var(--border2);}
+.info-r:last-child{border-bottom:none;}
+.ir-lbl{font-size:11.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;min-width:60px;padding-top:2px;}
+.ir-val{font-size:14px;color:var(--text);flex:1;}
+.ir-val a{color:var(--blue);text-decoration:none;}
+
+/* ── STATUS PICKER ── */
+.status-wrap{margin:0 16px 14px;background:var(--card2);border:0.5px solid var(--border);border-radius:12px;padding:13px 16px;display:flex;align-items:center;gap:12px;}
+.status-lbl{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;flex-shrink:0;}
+.status-wrap select{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;-webkit-appearance:none;}
+
+/* ── QUICK ACTIONS ROW ── */
+.qa-row{display:flex;gap:8px;padding:0 16px 14px;}
+.qa-btn{flex:1;padding:10px 6px;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;text-align:center;cursor:pointer;border:0.5px solid var(--border);background:var(--card2);color:var(--muted);-webkit-appearance:none;transition:transform .1s;}
+.qa-btn:active{transform:scale(.95);}
+.qa-edit{border-color:var(--blue);background:var(--blue-bg);color:var(--blue);}
+.qa-hot{border-color:var(--orange);background:var(--orange-bg);color:var(--orange);}
+.qa-delete{border-color:var(--red);background:var(--red-bg);color:var(--red);}
+
+/* ── APPRAISAL CARD ── */
+.appr-card{background:var(--card);border-radius:14px;margin:0 16px 10px;border:0.5px solid var(--border);overflow:hidden;}
+.appr-card-hdr{padding:14px 16px;background:linear-gradient(90deg,var(--gold-bg),transparent);border-bottom:0.5px solid var(--border2);display:flex;align-items:center;gap:10px;}
+.appr-card-hdr-icon{width:36px;height:36px;border-radius:10px;background:var(--gold-bg);border:0.5px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+
+/* ── PROGRESS BAR ── */
+.prog-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:0.5px solid var(--border2);}
+.prog-row:last-child{border-bottom:none;}
+.prog-lbl{font-size:12.5px;color:var(--text2);flex:1;cursor:pointer;}
+.prog-bar-wrap{flex:2;height:4px;background:var(--card3);border-radius:2px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:2px;}
+.prog-num{font-size:11.5px;color:var(--muted);min-width:28px;text-align:right;font-variant-numeric:tabular-nums;}
+
+/* ── STREET ROW ── */
+.street-row{display:flex;align-items:center;gap:12px;padding:13px 16px;background:var(--card);border-bottom:0.5px solid var(--border2);cursor:pointer;}
+.street-row:active{background:var(--card2);}
+
+/* ── BULK SMS ── */
+.bulk-item{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--card);border-bottom:0.5px solid var(--border2);}
+.bulk-check{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--border);background:var(--card2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:13px;}
+.bulk-check.on{background:var(--gold);border-color:var(--gold);color:#000;}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:64px 24px;}
+.empty-ico{font-size:52px;opacity:.2;margin-bottom:16px;}
+.empty-ttl{font-size:17px;font-weight:700;color:var(--muted);margin-bottom:8px;}
+.empty-sub{font-size:14px;color:var(--dim);line-height:1.6;}
+
+/* ── STICKY HDR ── */
+.sticky-hdr{padding:10px 16px 7px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;background:var(--bg);border-bottom:0.5px solid var(--border2);position:sticky;top:0;z-index:5;}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:calc(58px + env(safe-area-inset-bottom,34px) + 12px);left:16px;right:16px;background:var(--card);border:0.5px solid var(--border);border-radius:14px;padding:14px 16px;font-size:14px;font-weight:500;color:var(--text);box-shadow:0 8px 32px rgba(0,0,0,.35);display:flex;align-items:center;gap:10px;z-index:9999;transform:translateY(16px);opacity:0;transition:all .28s cubic-bezier(.34,1.56,.64,1);pointer-events:none;}
 #toast.on{transform:translateY(0);opacity:1;}
-/* EDIT MODAL SECTION */
-.edit-section-hdr{font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px;margin-top:18px;}
-.edit-section-hdr:first-child{margin-top:0;}
-/* QUICK ACTION ROW */
-.qa-row{display:flex;gap:8px;padding:12px 16px;border-bottom:0.5px solid var(--blight);}
-.qa-btn{flex:1;padding:10px 8px;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;text-align:center;cursor:pointer;border:0.5px solid var(--blight);background:var(--card2);color:var(--muted);-webkit-appearance:none;}
-.qa-btn:active{opacity:.7;}
-.qa-btn.danger{border-color:rgba(224,82,82,.3);background:rgba(224,82,82,.08);color:var(--red);}
-.qa-btn.warn{border-color:rgba(232,92,58,.3);background:rgba(232,92,58,.08);color:#FF7A5A;}
-.qa-btn.info{border-color:rgba(85,153,208,.3);background:rgba(85,153,208,.08);color:var(--blue);}
-/* APPRAISAL CARD on home */
-.appraisal-card{background:linear-gradient(135deg,rgba(201,169,110,.12),rgba(201,169,110,.04));border:0.5px solid var(--border);border-radius:16px;padding:16px;margin:0 16px 10px;cursor:pointer;}
-.appraisal-card:active{opacity:.85;}
-/* ARCHIVED SECTION */
-.arch-section{opacity:.55;}
-*{scrollbar-width:none;}
-*::-webkit-scrollbar{display:none;}
+
+/* ── MISC ── */
+*{scrollbar-width:none;}*::-webkit-scrollbar{display:none;}
+.divider{height:1px;background:var(--border2);margin:0 16px;}
+.muted-text{color:var(--muted);font-size:13px;}
+.pill-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;}
+
+/* ── CONTACT AVATAR COLORS ── */
+.av0{background:linear-gradient(135deg,#667EEA,#764BA2);}
+.av1{background:linear-gradient(135deg,#43E97B,#38F9D7);}
+.av2{background:linear-gradient(135deg,#FA709A,#FEE140);}
+.av3{background:linear-gradient(135deg,#4FACFE,#00F2FE);}
+.av4{background:linear-gradient(135deg,#F093FB,#F5576C);}
+.av5{background:linear-gradient(135deg,#FFA726,#FB8C00);}
+.av6{background:linear-gradient(135deg,#26C6DA,#00B0FF);}
+.av7{background:linear-gradient(135deg,#66BB6A,#43A047);}
 </style>
 </head>
-<body>
+<body data-theme="dark">
 <div id="app">
-  <div id="topbar">
-    <div class="tb-brand">Luxe Properties<small>Melbourne</small></div>
-    <button class="tb-add" onclick="showAddModal()">+</button>
-  </div>
+  <div id="topbar"></div>
   <div id="scroll"></div>
   <div id="tabs">
-    <div class="tab on" id="t-dash" onclick="go('dash')"><div class="tab-icon">◈</div><div class="tab-txt">Home</div></div>
-    <div class="tab" id="t-props" onclick="go('props')"><div class="tab-icon">⌂</div><div class="tab-txt">Properties</div><div class="tab-dot g" id="bd-props"></div></div>
-    <div class="tab" id="t-hot" onclick="go('hot')"><div class="tab-icon">🔥</div><div class="tab-txt">Hot List</div><div class="tab-dot" id="bd-hot"></div></div>
-    <div class="tab" id="t-appt" onclick="go('appt')"><div class="tab-icon">◷</div><div class="tab-txt">Appts</div><div class="tab-dot" id="bd-appt" style="display:none"></div></div>
-    <div class="tab" id="t-log" onclick="go('log')"><div class="tab-icon">📋</div><div class="tab-txt">Log</div><div class="tab-dot" id="bd-log" style="display:none"></div></div>
+    <div class="tab on" id="t-home" onclick="go('home')"><div class="tab-icon">🏠</div><div class="tab-txt">Home</div></div>
+    <div class="tab" id="t-smart" onclick="go('smart')"><div class="tab-icon">📞</div><div class="tab-txt">Smart Calls</div><div class="tab-dot g" id="bd-smart"></div></div>
+    <div class="tab" id="t-props" onclick="go('props')"><div class="tab-icon">⌂</div><div class="tab-txt">Properties</div></div>
+    <div class="tab" id="t-contacts" onclick="go('contacts')"><div class="tab-icon">👤</div><div class="tab-txt">Contacts</div></div>
+    <div class="tab" id="t-appt" onclick="go('appt')"><div class="tab-icon">📅</div><div class="tab-txt">Appts</div><div class="tab-dot" id="bd-appt" style="display:none"></div></div>
   </div>
 </div>
 <div id="toast"></div>
@@ -258,560 +358,724 @@ const AP=[{"st":"CONFIRMED","a":"31 Rudstone Bend, Greenvale","n":"Marisa Payne"
 const HL=[{"a":"8 Normanby Drive, Greenvale","n":"Andrew &  Melinda Ellis","p":"0419 331 227 0419 356 723","no":"routed to vm"},{"a":"1 Skene Court, Greenvale","n":"Marianne &  Daryl Canny","p":"0422 679 050 0438 599 534","no":"not interested"},{"a":"153 Greenvale Drive, Greenvale","n":"Frank Montalto","p":"0414 985 732","no":"routed to vm"},{"a":"27 Millport Rise, Greenvale","n":"Parichehr Sadeghinejad","p":"0414 812 704","no":"routed to vm"},{"a":"27 Normanby Drive, Greenvale","n":"CIGDEM BASARIR","p":"0410539233 0490787677","no":""},{"a":"46 Kirkham Drive, Greenvale","n":"Walid Kiryakos","p":"0401 563 190 0421 113 344","no":"not interested"},{"a":"34 Clifton Road, Greenvale","n":"Aziza Metlej","p":"0401 294 543","no":"routed to vm"},{"a":"177 Greenvale Drive, Greenvale","n":"Ryan Xueying Kia\nZhang","p":"0401 852 448","no":"not interested"},{"a":"31 Clifton Road, Greenvale","n":"Yilmaz & Selma Erbas","p":"0423 207 375 0406 949 616","no":"routed to vm"},{"a":"15 Macmillan Avenue, Greenvale","n":"Antonio Mercuri","p":"0411964845 0432251767","no":""},{"a":"17 Piccadilly Court, Greenvale","n":"Saki Panagakis","p":"0408 338 435","no":"routed to vm"},{"a":"70 Clare Boulevard, Greenvale","n":"Wiraj Arachchige","p":"0469 402 836","no":"call failed"},{"a":"99 Clare Boulevard, Greenvale","n":"Claudia & Umut Omer","p":"0458 020 019","no":"not interested"},{"a":"76 Clare Boulevard, Greenvale","n":"Emma & John Scorellaro","p":"0419 891 608","no":"routed to vm"},{"a":"10 Nairn Court, Greenvale","n":"Zahraa  Adnan Al Samra\nDakik","p":"0410 366 007","no":"cb later. Busy at the moment"},{"a":"39 Clifton Road, Greenvale","n":"Daniella Pati","p":"0402 341 896","no":"routed to vm"},{"a":"129 Greenvale Drive, Greenvale","n":"Antonio Mangiafico","p":"0418 338 469","no":"routed to vm/"},{"a":"20 Kinloch Grove, Greenvale","n":"Angelica & Ozgur Yildiz","p":"0424 977 657","no":"routed to vm"},{"a":"11 Fraserburgh Crescent, Greenvale","n":"Kasim Bilir","p":"0413 675 196","no":"routed to vm"},{"a":"85 Kirkham Drive, Greenvale","n":"Sandra Enes","p":"0438 976 944","no":"routed to vm"},{"a":"115 Greenvale Drive, Greenvale","n":"Cathy Calvi","p":"0412 977 812","no":"routed to vm"},{"a":"121 Kirkham Drive, Greenvale","n":"Figen Ozsoy","p":"0431 887 638 0431 626 517","no":"routed to vm"},{"a":"6 Greenock Court, Greenvale","n":"Robert Amenta","p":"0401 958 627","no":"routed to vm"},{"a":"42 Clare Boulevard, Greenvale","n":"Kirandip Kaur","p":"0422 281 834","no":"routed to vm"},{"a":"6 Dunfermline Avenue, Greenvale","n":"David Buckley","p":"0418 383 193","no":"routed to vm"},{"a":"9 Motherwell Avenue, Greenvale","n":"Daniel Barron","p":"0418 382 501","no":"routed to vm"},{"a":"17 Kinloch Grove, Greenvale","n":"YUCEL & SERAP BAS","p":"0422598457 0404846676","no":""},{"a":"3 Kinloch Grove, Greenvale","n":"Sam Grano","p":"0404 490 514","no":"not interested"},{"a":"53 Helmsdale Crescent, Greenvale","n":"Antonio & Kathy Aiello","p":"0418 568 230 0419 123 284","no":"routed to vm"},{"a":"8 Motherwell Avenue, Greenvale","n":"Marie & Mark Bravo","p":"0419 511 108","no":"routed to vm"},{"a":"42 Aberdeen Avenue, Greenvale","n":"Domenica & Maria Rossi","p":"0414 742 678","no":"no answer"},{"a":"24 Clifton Road, Greenvale","n":"Erol Elma","p":"0425 764 318","no":"routed to vm"},{"a":"100 Greenvale Drive, Greenvale","n":"Anas Sammak","p":"0490 255 447","no":"not interested"},{"a":"40 Helmsdale Crescent, Greenvale","n":"Elenora Cinquegrana","p":"0407 505 894","no":"hang up"},{"a":"79 Clare Boulevard, Greenvale","n":"Sal Daoud","p":"0401 646 746","no":"no answer"},{"a":"6 Ballymena Street, Greenvale","n":"Ola Odah","p":"0490 091 769 0490 250 814","no":"routed to vm"},{"a":"12 Millport Rise, Greenvale","n":"Graham Vaughan","p":"0412 223 693","no":"not interested"},{"a":"97 Clare Boulevard, Greenvale","n":"Silv Valenti","p":"0439 885 090 0416 092 409","no":"routed to vm"},{"a":"75 Clare Boulevard, Greenvale","n":"Antonino Cannizzaro","p":"0411 337 621","no":"routed to vm"},{"a":"3 Motherwell Avenue, Greenvale","n":"Brenda & Andrew Howden","p":"0414 488 426","no":"routed to vm"},{"a":"47 Linlithgow Way, Greenvale","n":"Simon Yohanna","p":"0408 665 459","no":"routed to vm"},{"a":"1 Cupar Place, Greenvale","n":"Revin Shaaya","p":"0404 444 344","no":"routed to vm"},{"a":"7 Mcguire Court, Greenvale","n":"George Schembri","p":"0418 302 922","no":"routed to vm"},{"a":"1 Lamark Court, Greenvale","n":"Lisa Danielson","p":"0408 008 066","no":"routed to vm"},{"a":"29 Crestwood Road, Greenvale","n":"Zafer Yasar","p":"0434 130 706","no":"routed to vm"},{"a":"19 Millport Rise, Greenvale","n":"Ben Vocale","p":"0410 489 823","no":"hang up"},{"a":"24 Kinloch Grove, Greenvale","n":"Md Habib","p":"0402 961 299 0451 837 119","no":"routed to vm"},{"a":"24 Greenvale Drive, Greenvale","n":"Silv Valenti","p":"0439 885 090 0416 092 409","no":"routed to vm"},{"a":"12 Erskine Court, Greenvale","n":"Maria & Mario Vella","p":"0425 715 841","no":"routed to vm"},{"a":"21 Motherwell Avenue, Greenvale","n":"Talal Chaar","p":"0426 299 006","no":"routed to vm"},{"a":"66 Greenvale Drive, Greenvale","n":"Rhonda Sheldon","p":"0419 957 494","no":"routed to vm"},{"a":"18 Queensferry Place, Greenvale","n":"Abdullah Akbaba","p":"0418 507 020","no":"not interested"},{"a":"11 Motherwell Avenue, Greenvale","n":"Anthony Yang","p":"0422 339 108","no":"routed to vm"},{"a":"4 Bolton Court, Greenvale","n":"David - Olivia Rosso","p":"0438 516 633","no":"routed to vm"},{"a":"18 Casablanca Court, Greenvale","n":"Raymond Carlassari","p":"0419 898 826","no":"routed to vm"},{"a":"10 Haworth Court, Greenvale","n":"Troy Brixton","p":"0409 025 781","no":"routed to vm"},{"a":"11 Greenock Court, Greenvale","n":"Raelene Challons","p":"0438 554 617","no":"routed to vm"},{"a":"128 Greenvale Drive, Greenvale","n":"Sofie Ricupero","p":"0401 560 383","no":""},{"a":"13 Greenvale Drive, Greenvale","n":"Kenneth Lang","p":"0414 533 876","no":"routed to vm"}];
 
 
-/* ─────────── STATE ─────────── */
-const S={page:'dash',prev:'props',propId:null,f:{q:'',status:'',street:''},pgSz:40,_props:null,_ix:null,_appts:null,_hot:null};
+/* ═══ STATE ═══ */
+const S={
+  page:'home',prev:'home',propId:null,contactId:null,
+  f:{q:'',status:'',street:'',tab:'all'},
+  cf:{q:''},
+  pgSz:40,theme:'dark',
+  _props:null,_ix:null,_appts:null,_hot:null,_contacts:null,
+  bulkMode:false,bulkSelected:new Set(),bulkStreet:''
+};
 
-function props(){
+/* ─ DATA ACCESSORS ─ */
+function getProps(){
   if(!S._props){
-    const ov=JSON.parse(localStorage.getItem('lp4')||'{}');
+    const ov=JSON.parse(localStorage.getItem('lp5')||'{}');
+    const custom=JSON.parse(localStorage.getItem('lp5c')||'[]');
     S._props=P.map(p=>ov[p.id]?{...p,...ov[p.id]}:{...p});
-    // Add custom props
-    const custom=JSON.parse(localStorage.getItem('lp4_custom')||'[]');
     custom.forEach(c=>{if(!S._props.find(x=>x.id===c.id))S._props.push(c);});
   }
   return S._props;
 }
 function saveProps(){
-  const ov={};
-  const custom=[];
-  props().forEach(p=>{
+  const ov={},custom=[];
+  getProps().forEach(p=>{
     const orig=P.find(x=>x.id===p.id);
     if(!orig){custom.push(p);return;}
     const d={};
-    ['status','notes','lastContact','e','p','n','a','isHot','archived'].forEach(k=>{if(p[k]!==orig[k])d[k]=p[k];});
+    ['status','no','e','p','n','a','s','isHot','archived','sb','po'].forEach(k=>{if(JSON.stringify(p[k])!==JSON.stringify(orig[k]))d[k]=p[k];});
     if(Object.keys(d).length)ov[p.id]=d;
   });
-  localStorage.setItem('lp4',JSON.stringify(ov));
-  localStorage.setItem('lp4_custom',JSON.stringify(custom));
+  localStorage.setItem('lp5',JSON.stringify(ov));
+  localStorage.setItem('lp5c',JSON.stringify(custom));
 }
-
-function ix(){if(!S._ix)S._ix=JSON.parse(localStorage.getItem('li4')||'[]');return S._ix;}
-function saveIx(){localStorage.setItem('li4',JSON.stringify(ix()));}
-
-function appts(){
+function getIx(){if(!S._ix)S._ix=JSON.parse(localStorage.getItem('li5')||'[]');return S._ix;}
+function saveIx(){localStorage.setItem('li5',JSON.stringify(getIx()));}
+function getAppts(){
   if(!S._appts){
-    const saved=JSON.parse(localStorage.getItem('la4')||'null');
-    S._appts=saved||AP.map(a=>({...a,id:Date.now()+Math.random(),archived:false}));
+    const saved=JSON.parse(localStorage.getItem('la5')||'null');
+    S._appts=saved||AP.map((a,i)=>({...a,id:'ap'+i,archived:false,time:'10:00',notes:''}));
   }
   return S._appts;
 }
-function saveAppts(){localStorage.setItem('la4',JSON.stringify(appts()));}
-
-function hotList(){
+function saveAppts(){localStorage.setItem('la5',JSON.stringify(getAppts()));}
+function getHot(){
   if(!S._hot){
-    const saved=JSON.parse(localStorage.getItem('lh4')||'null');
-    // Merge DB hot list with any user-added ones
-    const dbHot=HL.map(h=>({...h,id:h.id||Date.now()+Math.random(),archived:false,fromDB:true}));
-    const userHot=saved?saved.filter(h=>!h.fromDB):[];
-    S._hot=saved||dbHot;
+    const saved=JSON.parse(localStorage.getItem('lh5')||'null');
+    S._hot=saved||HL.map((h,i)=>({...h,id:'h'+i,archived:false,category:'HOT STOCK'}));
   }
   return S._hot;
 }
-function saveHot(){localStorage.setItem('lh4',JSON.stringify(hotList()));}
+function saveHot(){localStorage.setItem('lh5',JSON.stringify(getHot()));}
+function getContacts(){
+  if(!S._contacts)S._contacts=JSON.parse(localStorage.getItem('lc5')||'[]');
+  return S._contacts;
+}
+function saveContacts(){localStorage.setItem('lc5',JSON.stringify(getContacts()));}
 
-/* ─────────── HELPERS ─────────── */
+/* ═══ HELPERS ═══ */
 const el=id=>document.getElementById(id);
-const esc=s=>(s||'').replace(/'/g,"\\'").replace(/\n/g,' ');
-const sClass=s=>({uncontacted:'un',voicemail:'vm',no_answer:'na',callback:'cb',interested:'it',not_interested:'ni',appointment:'ap',sold:'so',no_data:'nd',sent:'se',noted:'se',connected:'it',hung_up:'ni',wrong_number:'ni'}[s]||'un');
-const sEmoji=s=>({uncontacted:'⬜',voicemail:'📵',no_answer:'🔕',callback:'🔄',interested:'⭐',not_interested:'✗',appointment:'📅',sold:'✅',no_data:'❓'}[s]||'⬜');
+const esc=s=>(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;').replace(/\n/g,' ');
+function avatarColor(name){const n=(name||'A').charCodeAt(0)%8;return 'av'+n;}
+function initials(name){const p=(name||'?').split(' ');return (p[0]?.[0]||'')+(p[1]?.[0]||'');}
+function sClass(s){return 'b-'+(s||'uncontacted').replace(/ /g,'_');}
+function sEmoji(s){return {uncontacted:'⬜',voicemail:'📵',no_answer:'🔕',callback:'🔄',interested:'⭐',not_interested:'✗',appointment:'📅',sold:'✅',no_data:'❓'}[s]||'⬜';}
 const statusOpts=['uncontacted','voicemail','no_answer','callback','interested','not_interested','appointment','sold'];
 function selOpts(cur){return statusOpts.map(s=>`<option value="${s}" ${cur===s?'selected':''}>${s.replace(/_/g,' ')}</option>`).join('');}
+function timeAgo(d){const s=Math.floor((Date.now()-new Date(d))/1000);if(s<60)return 'just now';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';if(s<604800)return Math.floor(s/86400)+'d ago';return Math.floor(s/604800)+'w ago';}
+function formatDate(d){if(!d)return '—';const dt=new Date(d.includes('T')?d:d+'T00:00:00');return dt.toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});}
 
-/* ─────────── NAV ─────────── */
+/* ═══ THEME ═══ */
+function toggleTheme(){
+  S.theme=S.theme==='dark'?'light':'dark';
+  document.body.setAttribute('data-theme',S.theme);
+  localStorage.setItem('lt',S.theme);
+  renderTopbar();
+}
+// Load saved theme
+S.theme=localStorage.getItem('lt')||'dark';
+document.body.setAttribute('data-theme',S.theme);
+
+/* ═══ NAVIGATION ═══ */
 function go(page,skipPrev){
   if(!skipPrev)S.prev=S.page;
   S.page=page;
-  ['dash','props','hot','appt','log'].forEach(t=>{const e=el('t-'+t);if(e)e.classList.toggle('on',t===page);});
-  const tb=el('topbar');
-  if(page==='detail'){
-    const p=props().find(x=>x.id===S.propId);
-    tb.innerHTML=`<button class="tb-back" onclick="go('${S.prev}',true)">‹ Back</button><div class="tb-title" style="font-size:13px;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${p?p.s:''}</div><div style="width:60px"></div>`;
-  } else if(page==='streets'){
-    tb.innerHTML=`<button class="tb-back" onclick="go('props',true)">‹ Properties</button><div class="tb-title">Streets</div><div style="width:60px"></div>`;
-  } else if(page==='dash'){
-    tb.innerHTML=`<div class="tb-brand">Luxe Properties<small>Melbourne</small></div><button class="tb-add" onclick="showAddAppraisalModal()">+</button>`;
-  } else {
-    const titles={props:'Properties',hot:'🔥 Hot List',appt:'Appointments',log:'Call Log'};
-    tb.innerHTML=`<div class="tb-title">${titles[page]||page}</div><div style="width:34px"></div>`;
-  }
+  ['home','smart','props','contacts','appt'].forEach(t=>{const e=el('t-'+t);if(e)e.classList.toggle('on',t===page);});
+  renderTopbar();
   el('scroll').scrollTop=0;
   S.pgSz=40;
-  ({dash:rDash,props:rProps,hot:rHot,appt:rAppt,log:rLog,streets:rStreets,detail:rDetail}[page]||rDash)();
+  ({home:rHome,smart:rSmart,props:rProps,contacts:rContacts,appt:rAppt,
+    prop_detail:rPropDetail,contact_detail:rContactDetail,streets:rStreets,
+    hot:rHot,log:rLog,bulk_sms:rBulkSMS}[page]||rHome)();
   badges();
 }
 
-function openProp(id){S.propId=id;go('detail');}
+function renderTopbar(){
+  const p=S.page;
+  const tb=el('topbar');
+  const themeBtn=`<button class="tb-btn tb-btn-theme" onclick="toggleTheme()">${S.theme==='dark'?'☀️':'🌙'}</button>`;
+  if(p==='home'){
+    tb.innerHTML=`<div class="tb-brand"><div class="tb-brand-name">Luxe Properties</div><div class="tb-brand-sub">Melbourne</div></div>${themeBtn}<button class="tb-btn tb-btn-add" onclick="showAddMenu()">+</button>`;
+  } else if(p==='prop_detail'){
+    const pr=getProps().find(x=>x.id===S.propId);
+    tb.innerHTML=`<button class="tb-back" onclick="go('${S.prev}',true)">‹ Properties</button><div style="flex:1"></div>${themeBtn}`;
+  } else if(p==='contact_detail'){
+    tb.innerHTML=`<button class="tb-back" onclick="go('contacts',true)">‹ Contacts</button><div style="flex:1"></div>${themeBtn}`;
+  } else if(p==='streets'){
+    tb.innerHTML=`<button class="tb-back" onclick="go('props',true)">‹ Back</button><div class="tb-title" style="text-align:center">Streets</div>${themeBtn}`;
+  } else if(p==='hot'){
+    tb.innerHTML=`<button class="tb-back" onclick="go('home',true)">‹ Back</button><div class="tb-title" style="text-align:center">🔥 Hot List</div>${themeBtn}`;
+  } else if(p==='log'){
+    tb.innerHTML=`<button class="tb-back" onclick="go('home',true)">‹ Back</button><div class="tb-title" style="text-align:center">Call Log</div>${themeBtn}`;
+  } else if(p==='bulk_sms'){
+    tb.innerHTML=`<button class="tb-back" onclick="go('props',true)">‹ Back</button><div class="tb-title" style="text-align:center">Bulk SMS</div>${themeBtn}`;
+  } else {
+    const titles={smart:'Smart Calls',props:'Properties',contacts:'Contacts',appt:'Appointments'};
+    tb.innerHTML=`<div class="tb-title">${titles[p]||p}</div><div style="flex:1"></div>${themeBtn}`;
+  }
+}
 
-/* ─────────── DASHBOARD ─────────── */
-function rDash(){
-  const pp=props();
+function openProp(id){S.propId=id;go('prop_detail');}
+function openContact(id){S.contactId=id;go('contact_detail');}
+
+/* ═══ HOME ═══ */
+function rHome(){
+  const pp=getProps().filter(p=>!p.archived);
   const total=pp.length;
   const contacted=pp.filter(p=>!['uncontacted','no_data'].includes(p.status)).length;
   const interested=pp.filter(p=>['interested','appointment'].includes(p.status)).length;
-  const hotCount=hotList().filter(h=>!h.archived).length;
-  const cfAppts=appts().filter(a=>a.status==='CONFIRMED'&&!a.archived);
-  const week=ix().filter(i=>Date.now()-new Date(i.date)<604800000).length;
+  const hotCount=getHot().filter(h=>!h.archived).length;
+  const cfAppts=getAppts().filter(a=>a.status==='CONFIRMED'&&!a.archived);
+  const week=getIx().filter(i=>Date.now()-new Date(i.date)<604800000).length;
   const sc={};pp.forEach(p=>{sc[p.status]=(sc[p.status]||0)+1;});
   const stc={};pp.forEach(p=>{stc[p.s]=(stc[p.s]||0)+1;});
   const topSt=Object.entries(stc).sort((a,b)=>b[1]-a[1]).slice(0,5);
-  const clrs={uncontacted:'#555250',voicemail:'#5599D0',no_answer:'#EDA830',callback:'#C9A96E',interested:'#48BB78',not_interested:'#E05252',appointment:'#9875C5',sold:'#C9A96E'};
+  const clrs={uncontacted:getComputedStyle(document.body).getPropertyValue('--muted').trim(),voicemail:'var(--blue)',no_answer:'var(--amber)',callback:'var(--gold)',interested:'var(--green)',not_interested:'var(--red)',appointment:'var(--purple)',sold:'var(--gold)'};
   const lbls={uncontacted:'Uncontacted',voicemail:'Voicemail',no_answer:'No Answer',callback:'Callback',interested:'Interested',not_interested:'Not Interested',appointment:'Appointment',sold:'Sold'};
 
   el('scroll').innerHTML=`
-    <div style="padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between">
-      <div style="font-family:'Playfair Display',serif;font-size:13px;color:var(--gold);letter-spacing:.5px">Good day, Alex</div>
-      <div style="font-size:11px;color:var(--dim)">${new Date().toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'})}</div>
+    <div style="padding:16px 16px 6px">
+      <div style="font-size:13px;color:var(--muted)">Welcome back</div>
+      <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--text)">Alex Doguluer</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:2px">${new Date().toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long'})}</div>
     </div>
 
-    <div class="stats">
-      <div class="sc g" onclick="go('props')"><div class="sc-arrow">›</div><div class="sc-lbl">Properties</div><div class="sc-val">${total.toLocaleString()}</div><div class="sc-sub">${ST.length} streets</div></div>
-      <div class="sc b" onclick="filterStatus('contacted_any')"><div class="sc-arrow">›</div><div class="sc-lbl">Contacted</div><div class="sc-val">${contacted}</div><div class="sc-sub">${Math.round(contacted/total*100)}% coverage</div></div>
-      <div class="sc gr" onclick="filterStatus('interested')"><div class="sc-arrow">›</div><div class="sc-lbl">Interested</div><div class="sc-val">${interested}</div><div class="sc-sub">${cfAppts.length} confirmed appts</div></div>
-      <div class="sc a" onclick="go('hot')"><div class="sc-arrow">›</div><div class="sc-lbl">Hot List</div><div class="sc-val">${hotCount}</div><div class="sc-sub">${week} interactions/wk</div></div>
+    <div class="stats-row">
+      <div class="stat-card stat-gold" onclick="filterAndGo('','')"><div class="stat-arrow">›</div><div class="stat-lbl">Properties</div><div class="stat-val">${total.toLocaleString()}</div><div class="stat-sub">${ST.length} streets</div></div>
+      <div class="stat-card stat-blue" onclick="filterAndGo('','')"><div class="stat-arrow">›</div><div class="stat-lbl">Contacted</div><div class="stat-val">${contacted}</div><div class="stat-sub">${Math.round(contacted/total*100)}% coverage</div></div>
+      <div class="stat-card stat-green" onclick="filterAndGo('interested','')"><div class="stat-arrow">›</div><div class="stat-lbl">Interested</div><div class="stat-val">${interested}</div><div class="stat-sub">${cfAppts.length} confirmed appts</div></div>
+      <div class="stat-card stat-amber" onclick="go('hot')"><div class="stat-arrow">›</div><div class="stat-lbl">Hot List</div><div class="stat-val">${hotCount}</div><div class="stat-sub">${week} calls this week</div></div>
     </div>
 
-    <!-- APPRAISALS SECTION -->
-    <div style="padding:6px 16px 8px;display:flex;align-items:center;justify-content:space-between">
-      <div style="font-size:10.5px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:1.3px">Upcoming Appraisals</div>
-      <button style="background:none;border:none;color:var(--gold);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif" onclick="go('appt')">All →</button>
+    <!-- QUICK ACTIONS -->
+    <div style="padding:0 16px;display:flex;gap:10px;margin-bottom:14px">
+      <button class="btn btn-gold" style="flex:1;padding:12px" onclick="go('smart')">📞 Smart Calls</button>
+      <button class="btn btn-ghost" style="flex:1;padding:12px" onclick="go('bulk_sms')">💬 Bulk SMS</button>
+    </div>
+
+    <!-- UPCOMING APPTS -->
+    <div style="padding:0 16px 8px;display:flex;align-items:center;justify-content:space-between">
+      <div class="section-lbl">Upcoming Appraisals</div>
+      <button class="section-link" onclick="go('appt')">See All →</button>
     </div>
     ${cfAppts.length===0
-      ? `<div style="padding:14px 16px;font-size:13px;color:var(--dim);font-style:italic;background:var(--card);border-top:0.5px solid var(--blight);border-bottom:0.5px solid var(--blight);margin-bottom:10px">No upcoming appointments — tap + to add one</div>`
-      : `<div class="cblock" style="margin-bottom:10px">
-          ${cfAppts.slice(0,3).map(a=>`
-            <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:0.5px solid var(--blight);cursor:pointer" onclick="showRescheduleModal('${a.id}')">
-              <div style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;box-shadow:0 0 5px rgba(72,187,120,.5)"></div>
-              <div style="flex:1;min-width:0">
-                <div style="font-size:13px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a.a}</div>
-                <div style="font-size:11.5px;color:var(--dim);margin-top:2px">${a.n} · ${(a.d||a.date||'').split('T')[0]}</div>
-              </div>
-              <div style="display:flex;gap:6px">
-                <button class="ibt" onclick="event.stopPropagation();callPhone('${esc(a.p||a.phone)}','${esc(a.n||a.name)}','${esc(a.a||a.address)}',null)">📞</button>
-                <button class="ibt" onclick="event.stopPropagation();showRescheduleModal('${a.id}')">📅</button>
-              </div>
-            </div>`).join('')}
-         </div>`}
+      ?`<div style="padding:14px 16px 14px;font-size:13px;color:var(--dim);font-style:italic;background:var(--card);border-radius:14px;margin:0 16px 14px;border:0.5px solid var(--border);text-align:center">No upcoming appointments<br><button class="btn btn-gold btn-sm" style="margin-top:10px;padding:9px 18px" onclick="showAddAppraisalModal()">+ Book Appraisal</button></div>`
+      :`<div class="page-section">${cfAppts.slice(0,3).map(a=>`
+        <div class="list-row" style="cursor:pointer" onclick="showRescheduleModal('${a.id}')">
+          <div class="row-avatar" style="background:var(--purple-bg);border-color:var(--purple)"><span style="font-size:18px">📅</span></div>
+          <div class="row-body">
+            <div class="row-title">${a.a||a.address||''}</div>
+            <div class="row-sub">${a.n||a.name||''}</div>
+            <div class="row-meta"><span class="badge b-appointment">${(a.d||a.date||'').split('T')[0]} ${a.time?'· '+a.time:''}</span></div>
+          </div>
+          <div style="display:flex;gap:7px">
+            <button class="ibt" onclick="event.stopPropagation();callPhone('${esc(a.p||a.phone||'')}','${esc(a.n||a.name||'')}','${esc(a.a||a.address||'')}',null)">📞</button>
+          </div>
+        </div>`).join('')}</div>`}
 
     <!-- STATUS BREAKDOWN -->
-    <div class="cblock" style="margin-bottom:10px">
-      <div style="padding:14px 16px 6px;display:flex;align-items:center;justify-content:space-between">
-        <div class="info-blk-ttl">Contact Status</div>
-      </div>
-      <div style="padding:4px 16px 14px">
-        ${Object.entries(clrs).filter(([s])=>sc[s]).map(([s,c])=>`
-          <div class="pr" onclick="filterStatus('${s}')">
-            <div class="pr-lbl" style="cursor:pointer">${lbls[s]}</div>
-            <div class="pr-bar"><div class="pr-fill" style="width:${Math.round((sc[s]||0)/total*100)}%;background:${c}"></div></div>
-            <div class="pr-num" style="color:${c}">${sc[s]||0}</div>
-          </div>`).join('')}
-      </div>
+    <div style="padding:0 16px 8px;display:flex;align-items:center;justify-content:space-between">
+      <div class="section-lbl">Pipeline Overview</div>
+    </div>
+    <div class="page-section" style="padding:14px 16px">
+      ${Object.entries(lbls).filter(([s])=>sc[s]).map(([s,l])=>`
+        <div class="prog-row" onclick="filterAndGo('${s}','')">
+          <div class="prog-lbl">${l}</div>
+          <div class="prog-bar-wrap"><div class="prog-fill" style="width:${Math.round((sc[s]||0)/total*100)}%;background:${clrs[s]||'var(--muted)'}"></div></div>
+          <div class="prog-num" style="color:${clrs[s]||'var(--muted)'}">${sc[s]||0}</div>
+        </div>`).join('')}
     </div>
 
     <!-- TOP STREETS -->
-    <div class="cblock" style="margin-bottom:10px">
-      <div style="padding:14px 16px 6px;display:flex;align-items:center;justify-content:space-between">
-        <div class="info-blk-ttl">Top Streets</div>
-        <button style="background:none;border:none;color:var(--gold);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif" onclick="go('streets')">All →</button>
-      </div>
-      <div style="padding:4px 16px 14px">
-        ${topSt.map(([s,c])=>`
-          <div class="pr" onclick="filterStreet('${esc(s)}')">
-            <div class="pr-lbl" style="color:var(--text)">${s}</div>
-            <div class="pr-bar"><div class="pr-fill" style="width:${Math.round(c/topSt[0][1]*100)}%;background:var(--gold)"></div></div>
-            <div class="pr-num">${c}</div>
-          </div>`).join('')}
+    <div style="padding:0 16px 8px;display:flex;align-items:center;justify-content:space-between">
+      <div class="section-lbl">Top Streets</div>
+      <button class="section-link" onclick="go('streets')">All ${ST.length} →</button>
+    </div>
+    <div class="page-section" style="padding:14px 16px">
+      ${topSt.map(([s,c])=>`
+        <div class="prog-row" onclick="filterAndGo('','${esc(s)}')">
+          <div class="prog-lbl" style="color:var(--text)">${s}</div>
+          <div class="prog-bar-wrap"><div class="prog-fill" style="width:${Math.round(c/topSt[0][1]*100)}%;background:var(--gold)"></div></div>
+          <div class="prog-num">${c}</div>
+        </div>`).join('')}
+    </div>
+
+    <!-- RECENT ACTIVITY -->
+    ${getIx().length?`
+    <div style="padding:0 16px 8px;display:flex;align-items:center;justify-content:space-between">
+      <div class="section-lbl">Recent Activity</div>
+      <button class="section-link" onclick="go('log')">See All →</button>
+    </div>
+    <div class="page-section">
+      ${[...getIx()].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,4).map(i=>`
+        <div class="list-row" style="cursor:pointer" onclick="${i.propertyId?`openProp(${i.propertyId})`:''}">
+          <div class="tl-dot" style="width:40px;height:40px;flex-shrink:0">${{call:'📞',sms:'💬',email:'✉️',note:'📝'}[i.type]||'📋'}</div>
+          <div class="row-body">
+            <div class="row-title">${i.address||i.name||''}</div>
+            <div class="row-meta"><span class="badge ${sClass(i.outcome)}">${i.outcome||i.type}</span><span class="row-time">${timeAgo(i.date)}</span></div>
+          </div>
+        </div>`).join('')}
+    </div>`:''}
+    <div style="height:20px"></div>`;
+}
+
+function filterAndGo(status,street){
+  S.f.status=status;S.f.street=street;S.f.q='';S.pgSz=40;go('props');
+}
+
+/* ═══ SMART CALLS ═══ */
+function rSmart(){
+  const pp=getProps().filter(p=>!p.archived);
+  // Hot stock = hotlist + interested + callback
+  const hotStock=pp.filter(p=>p.isHot||getHot().find(h=>h.a===p.a&&!h.archived));
+  const callList=pp.filter(p=>['callback','interested','voicemail'].includes(p.status));
+  const all=[...new Map([...hotStock,...callList].map(p=>[p.id,p])).values()];
+  const made=getIx().filter(i=>i.type==='call').length;
+  const today=getIx().filter(i=>{const d=new Date(i.date);const n=new Date();return d.toDateString()===n.toDateString()&&i.type==='call';}).length;
+
+  el('scroll').innerHTML=`
+    <div class="smart-call-hdr">
+      <div style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:6px">Smart Call List</div>
+      <div class="smart-call-title">${all.length} Priority Leads</div>
+      <div class="smart-call-sub">Highest propensity contacts to call today</div>
+      <div class="call-progress">
+        <span class="call-prog-lbl">Today's calls</span>
+        <span class="call-prog-val">${today} / ${Math.min(all.length,50)}</span>
       </div>
     </div>
+
+    <div style="padding:12px 16px 6px;display:flex;gap:8px">
+      <button class="btn btn-gold btn-sm" onclick="go('bulk_sms')" style="flex:1">💬 Bulk SMS All</button>
+    </div>
+
+    <div class="sticky-hdr">RECENT PROPENSITY ACTIVITY ${all.length}/${all.length}</div>
+    ${all.length===0
+      ?`<div class="empty-state"><div class="empty-ico">📞</div><div class="empty-ttl">No priority calls right now</div><div class="empty-sub">Contacts marked as Hot List, Interested or Callback will appear here</div></div>`
+      :all.map(p=>{
+        const isHot=p.isHot||getHot().find(h=>h.a===p.a&&!h.archived);
+        const cat=isHot?'HOT STOCK':p.status==='callback'?'PIPELINE':p.status==='voicemail'?'RECENT CALL':'';
+        const lastIx=getIx().filter(i=>i.propertyId===p.id).sort((a,b)=>new Date(b.date)-new Date(a.date))[0];
+        return `<div class="list-row" style="cursor:pointer" onclick="openProp(${p.id})">
+          <div class="row-avatar ${avatarColor(p.n)}" style="width:44px;height:44px;border-radius:12px">
+            <span class="row-avatar-initials">${initials(p.n)}</span>
+          </div>
+          <div class="row-body">
+            <div class="row-title">${p.n||'Unknown Owner'}</div>
+            <div class="row-sub">${p.a||''}</div>
+            <div class="row-meta">
+              ${cat?`<span class="badge ${cat==='HOT STOCK'?'b-hot':cat==='PIPELINE'?'b-pipeline':'b-voicemail'}">${cat}</span>`:''}
+              ${lastIx?`<span class="row-time">${timeAgo(lastIx.date).toUpperCase()}</span>`:'<span class="row-time">NOT CALLED</span>'}
+            </div>
+          </div>
+          <div style="display:flex;gap:6px;flex-shrink:0">
+            <button class="ibt" onclick="event.stopPropagation();callPhone('${esc(p.p)}','${esc(p.n)}','${esc(p.a)}',${p.id})">📞</button>
+            <button class="ibt" onclick="event.stopPropagation();openSMS('${esc(p.p)}','${esc(p.n)}','${esc(p.a)}',${p.id})">💬</button>
+          </div>
+        </div>`;
+      }).join('')}
     <div style="height:16px"></div>`;
 }
 
-function filterStatus(s){
-  if(s==='contacted_any'){S.f.status='';S.f.q='';S.f.street='';}
-  else{S.f.status=s;S.f.q='';S.f.street='';}
-  S.pgSz=40;go('props');
-}
-function filterStreet(s){S.f.street=s;S.f.status='';S.f.q='';S.pgSz=40;go('props');}
-
-/* ─────────── PROPERTIES ─────────── */
-function filtered(){
-  let pp=props().filter(p=>!p.archived);
+/* ═══ PROPERTIES ═══ */
+function getFiltered(){
+  let pp=getProps().filter(p=>!p.archived);
   const{q,status,street}=S.f;
   if(street)pp=pp.filter(p=>p.s===street);
   if(status)pp=pp.filter(p=>p.status===status);
-  if(q){const lq=q.toLowerCase();pp=pp.filter(p=>(p.a||'').toLowerCase().includes(lq)||(p.n||'').toLowerCase().includes(lq)||(p.p||'').includes(lq));}
+  if(q){const lq=q.toLowerCase();pp=pp.filter(p=>(p.a||'').toLowerCase().includes(lq)||(p.n||'').toLowerCase().includes(lq)||(p.p||'').includes(lq)||(p.e||'').toLowerCase().includes(lq));}
   return pp;
 }
 
 function rProps(){
-  const ff=filtered();
+  const ff=getFiltered();
   const page=ff.slice(0,S.pgSz);
   const more=ff.length>S.pgSz;
   el('scroll').innerHTML=`
-    <div class="search-wrap">
+    <div class="search-bar">
       <div class="search-inner">
-        <span style="color:var(--dim);font-size:16px;flex-shrink:0">⌕</span>
-        <input type="text" id="srch" placeholder="Search address, name, phone…"
+        <span class="search-icon">⌕</span>
+        <input type="text" id="psrch" placeholder="Search address, name, phone…"
           value="${(S.f.q||'').replace(/"/g,'&quot;')}"
-          autocomplete="off" autocorrect="off" spellcheck="false" autocapitalize="none"
-          inputmode="search"
-          style="font-size:16px">
+          autocomplete="off" autocorrect="off" spellcheck="false" autocapitalize="none" inputmode="search">
+        ${S.f.q?`<span class="search-clear" onclick="clearSearch()">✕</span>`:''}
       </div>
     </div>
-    <div class="chips">
-      <div class="chip ${!S.f.status?'on':''}" onclick="applyF('status','')">All ${props().filter(p=>!p.archived).length}</div>
-      ${[['uncontacted','Uncontacted'],['voicemail','Voicemail'],['no_answer','No Answer'],['callback','Callback'],['interested','⭐ Interested'],['not_interested','Not Interested'],['appointment','📅 Booked']].map(([v,l])=>`<div class="chip ${S.f.status===v?'on':''}" onclick="applyF('status','${v}')">${l}</div>`).join('')}
-      ${S.f.street?`<div class="chip on" onclick="applyF('street','')">📍 ${S.f.street} ×</div>`:''}
+    <!-- STREET SEARCH -->
+    <div style="padding:8px 16px 0;background:var(--card);border-bottom:0.5px solid var(--border2)">
+      <select class="fsel" id="street-sel" style="border-radius:10px;font-size:13px;padding:9px 12px" onchange="S.f.street=this.value;S.pgSz=40;rProps()">
+        <option value="">All Streets (${ST.length})</option>
+        ${[...new Set(getProps().filter(p=>!p.archived).map(p=>p.s))].sort().map(s=>`<option value="${esc(s)}" ${S.f.street===s?'selected':''}>${s}</option>`).join('')}
+      </select>
     </div>
-    <div style="padding:8px 16px;font-size:12px;color:var(--dim);background:var(--dark);border-bottom:0.5px solid var(--blight);display:flex;justify-content:space-between;align-items:center">
+    <div class="chip-row">
+      <div class="chip ${!S.f.status?'on':''}" onclick="applyF('status','')">All ${getProps().filter(p=>!p.archived).length}</div>
+      ${[['uncontacted','Uncontacted'],['voicemail','Voicemail'],['no_answer','No Answer'],['callback','Callback'],['interested','⭐ Interested'],['not_interested','Not Int.'],['appointment','📅 Booked']].map(([v,l])=>`<div class="chip ${S.f.status===v?'on':''}" onclick="applyF('status','${v}')">${l}</div>`).join('')}
+    </div>
+    <div style="padding:8px 16px;font-size:12px;color:var(--muted);background:var(--bg);border-bottom:0.5px solid var(--border2);display:flex;justify-content:space-between;align-items:center">
       <span>${ff.length.toLocaleString()} properties</span>
-      <button style="background:none;border:none;color:var(--gold);font-size:12.5px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif" onclick="go('streets')">By Street →</button>
+      <div style="display:flex;gap:10px">
+        <button class="section-link" onclick="go('streets')">By Street</button>
+        <button class="section-link" onclick="go('bulk_sms')">Bulk SMS</button>
+      </div>
     </div>
-    <div id="prop-list">
+    <div id="plist">
     ${page.length===0
-      ?`<div class="empty"><div class="empty-ico">🔍</div><div class="empty-ttl">No results</div><div class="empty-sub">Try a different search or clear filters</div></div>`
+      ?`<div class="empty-state"><div class="empty-ico">🔍</div><div class="empty-ttl">No results</div><div class="empty-sub">Try a different search or clear the filters above</div></div>`
       :page.map(p=>propRowHTML(p)).join('')}
     </div>
-    ${more?`<div style="padding:14px 16px;border-top:0.5px solid var(--blight)"><button onclick="loadMore()" class="btn btn-o" style="width:100%;justify-content:center;font-size:14px">Load more (${ff.length-S.pgSz} remaining)</button></div>`:''}
+    ${more?`<div style="padding:14px 16px"><button onclick="loadMore()" class="btn btn-ghost" style="width:100%;justify-content:center;font-size:14px">Load more (${ff.length-S.pgSz} remaining)</button></div>`:''}
     <div style="height:16px"></div>`;
-
-  // Attach search listener properly - key fix for iOS
-  const inp=el('srch');
-  if(inp){
-    inp.addEventListener('input',function(){searchDebounce(this.value);});
-    inp.addEventListener('keyup',function(){searchDebounce(this.value);});
-    inp.addEventListener('change',function(){searchDebounce(this.value);});
-  }
-  // Attach swipe listeners
-  setTimeout(attachSwipes,100);
-}
-
-let _searchTimer=null;
-function searchDebounce(v){
-  clearTimeout(_searchTimer);
-  _searchTimer=setTimeout(()=>{
-    S.f.q=v;
-    S.pgSz=40;
-    const ff=filtered();
-    const page=ff.slice(0,S.pgSz);
-    const list=el('prop-list');
-    if(list){
-      list.innerHTML=page.length===0
-        ?`<div class="empty"><div class="empty-ico">🔍</div><div class="empty-ttl">No results</div></div>`
-        :page.map(p=>propRowHTML(p)).join('');
-      setTimeout(attachSwipes,50);
-    }
-  },180);
+  attachSearch('psrch');
+  setTimeout(attachSwipes,80);
 }
 
 function propRowHTML(p){
-  const isHot=p.isHot||hotList().find(h=>h.a===p.a&&!h.archived);
-  return `<div class="swipe-wrap" id="sw-${p.id}">
-    <div class="swipe-actions">
-      <div class="swipe-action-btn sa-edit" onclick="showEditModal(${p.id})"><span class="sai">✏️</span>Edit</div>
-      <div class="swipe-action-btn sa-hot" onclick="toggleHot(${p.id})"><span class="sai">${isHot?'💔':'🔥'}</span>${isHot?'Unhot':'Hot'}</div>
-      <div class="swipe-action-btn sa-delete" onclick="confirmDelete(${p.id})"><span class="sai">🗑️</span>Delete</div>
+  const isHot=p.isHot||getHot().find(h=>h.a===p.a&&!h.archived);
+  const lastIx=getIx().filter(i=>i.propertyId===p.id).sort((a,b)=>new Date(b.date)-new Date(a.date))[0];
+  return `<div class="swipe-wrap" id="sw${p.id}">
+    <div class="swipe-actions" style="transform:translateX(100%)">
+      <div class="sw-btn sw-edit" onclick="showEditModal(${p.id})"><span class="swi">✏️</span>Edit</div>
+      <div class="sw-btn sw-hot" onclick="toggleHot(${p.id})">${isHot?`<span class="swi">💔</span>Unhot`:`<span class="swi">🔥</span>Hot`}</div>
+      <div class="sw-btn sw-call" onclick="callPhone('${esc(p.p)}','${esc(p.n)}','${esc(p.a)}',${p.id})"><span class="swi">📞</span>Call</div>
+      <div class="sw-btn sw-delete" onclick="confirmDelete(${p.id})"><span class="swi">🗑️</span>Delete</div>
     </div>
-    <div class="prop-row" id="pr-${p.id}">
-      <div class="prop-row-inner" onclick="openProp(${p.id})">
-        <div class="prop-icon">${sEmoji(p.status)}</div>
-        <div class="prop-body">
-          <div class="prop-addr">${p.a||''}${isHot?' <span class="hot-badge">🔥 Hot</span>':''}</div>
-          <div class="prop-name">${p.n||'<em style="color:var(--dim)">Unknown owner</em>'}</div>
-          <div class="prop-meta">
+    <div class="list-row" id="lr${p.id}">
+      <div class="list-row-inner" onclick="openProp(${p.id})">
+        <div class="row-avatar ${avatarColor(p.n)}" style="border-radius:12px">
+          <span class="row-avatar-initials">${initials(p.n)}</span>
+        </div>
+        <div class="row-body">
+          <div class="row-title">${p.a||''}${isHot?' <span class="badge b-hot" style="font-size:9px;padding:1px 6px">🔥 HOT</span>':''}</div>
+          <div class="row-sub">${p.n||'<em style="color:var(--dim)">Unknown owner</em>'}</div>
+          <div class="row-meta">
             <span class="badge ${sClass(p.status)}">${(p.status||'').replace(/_/g,' ')}</span>
-            ${p.p?`<span style="font-size:11.5px;color:var(--dim);font-family:monospace">${p.p}</span>`:''}
+            ${p.p?`<span style="font-size:11px;color:var(--dim);font-family:monospace">${p.p}</span>`:''}
+            ${lastIx?`<span class="row-time">${timeAgo(lastIx.date)}</span>`:''}
           </div>
         </div>
-        <div class="prop-chevron">›</div>
+        <div class="row-chevron">›</div>
       </div>
     </div>
   </div>`;
 }
 
-/* ─────────── SWIPE HANDLER ─────────── */
+function clearSearch(){S.f.q='';S.pgSz=40;rProps();}
+function applyF(k,v){S.f[k]=v;S.pgSz=40;rProps();}
+function loadMore(){S.pgSz+=40;const ff=getFiltered();const list=el('plist');if(list)list.innerHTML=ff.slice(0,S.pgSz).map(p=>propRowHTML(p)).join('');setTimeout(attachSwipes,80);}
+
+/* ─ Search ─ */
+let _sT=null;
+function attachSearch(inputId){
+  const inp=el(inputId);
+  if(!inp)return;
+  const handler=function(){
+    const v=this.value;
+    clearTimeout(_sT);
+    _sT=setTimeout(()=>{
+      S.f.q=v;S.pgSz=40;
+      const ff=getFiltered();
+      const list=el('plist');
+      if(list){
+        list.innerHTML=ff.length===0
+          ?`<div class="empty-state"><div class="empty-ico">🔍</div><div class="empty-ttl">No results</div></div>`
+          :ff.slice(0,S.pgSz).map(p=>propRowHTML(p)).join('');
+        setTimeout(attachSwipes,80);
+      }
+      // Update clear btn
+      const si=inp.parentNode;
+      const old=si.querySelector('.search-clear');
+      if(v&&!old){const span=document.createElement('span');span.className='search-clear';span.onclick=()=>{inp.value='';clearSearch();};span.textContent='✕';si.appendChild(span);}
+      else if(!v&&old)old.remove();
+    },160);
+  };
+  inp.addEventListener('input',handler);
+  inp.addEventListener('keyup',handler);
+}
+
+/* ─ Swipe ─ */
 function attachSwipes(){
   document.querySelectorAll('.swipe-wrap').forEach(wrap=>{
-    const row=wrap.querySelector('.prop-row, .appt-r');
-    const actions=wrap.querySelector('.swipe-actions');
-    if(!row||!actions||row._swipeAttached)return;
-    row._swipeAttached=true;
-    let startX=0,startY=0,curX=0,moved=false,active=false;
-    const THRESHOLD=60;
-    const actW=actions.scrollWidth||192;
+    const row=wrap.querySelector('.list-row,.appt-r');
+    const acts=wrap.querySelector('.swipe-actions');
+    if(!row||!acts||row._sw)return;
+    row._sw=true;
+    let sx=0,sy=0,cx=0,mv=false,act=false;
+    const W=acts.scrollWidth||288;
+    acts.style.transform='translateX(100%)';
 
-    row.addEventListener('touchstart',e=>{
-      startX=e.touches[0].clientX;
-      startY=e.touches[0].clientY;
-      curX=0;moved=false;active=true;
-    },{passive:true});
-
+    row.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY;cx=0;mv=false;act=true;},{passive:true});
     row.addEventListener('touchmove',e=>{
-      if(!active)return;
-      const dx=e.touches[0].clientX-startX;
-      const dy=e.touches[0].clientY-startY;
-      if(!moved&&Math.abs(dy)>Math.abs(dx)){active=false;return;}
-      moved=true;
-      curX=Math.max(-actW,Math.min(0,dx));
-      row.style.transform=`translateX(${curX}px)`;
+      if(!act)return;
+      const dx=e.touches[0].clientX-sx,dy=e.touches[0].clientY-sy;
+      if(!mv&&Math.abs(dy)>Math.abs(dx)){act=false;return;}
+      mv=true;e.preventDefault();
+      cx=Math.max(-W,Math.min(0,dx-(row._open?W:0)));
+      row.style.transform=`translateX(${cx}px)`;
       row.style.transition='none';
-    },{passive:true});
-
+    },{passive:false});
     row.addEventListener('touchend',()=>{
-      if(!active)return;
-      active=false;
+      if(!act)return;act=false;
       row.style.transition='transform .25s ease';
-      if(curX<-THRESHOLD){
-        row.style.transform=`translateX(-${actW}px)`;
-        row._open=true;
-      } else {
-        row.style.transform='translateX(0)';
-        row._open=false;
-      }
+      if(cx<-W/3){row.style.transform=`translateX(-${W}px)`;row._open=true;}
+      else{row.style.transform='translateX(0)';row._open=false;}
     });
   });
-
-  // Close open swipes when tapping elsewhere
   document.addEventListener('touchstart',e=>{
-    document.querySelectorAll('.prop-row, .appt-r').forEach(row=>{
+    document.querySelectorAll('.list-row,.appt-r').forEach(row=>{
       if(row._open&&!row.contains(e.target)){
         row.style.transition='transform .25s ease';
-        row.style.transform='translateX(0)';
-        row._open=false;
+        row.style.transform='translateX(0)';row._open=false;
       }
     });
   },{passive:true});
 }
 
-function applyF(k,v){S.f[k]=v;S.pgSz=40;rProps();}
-function loadMore(){S.pgSz+=40;rProps();const s=el('scroll');s.scrollTop=s.scrollHeight-500;}
-
-/* ─────────── PROPERTY DETAIL ─────────── */
-function rDetail(){
-  const p=props().find(x=>x.id===S.propId);
+/* ═══ PROPERTY DETAIL ═══ */
+function rPropDetail(){
+  const p=getProps().find(x=>x.id===S.propId);
   if(!p){go('props');return;}
-  const pIx=ix().filter(i=>i.propertyId===p.id).sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const pIx=getIx().filter(i=>i.propertyId===p.id).sort((a,b)=>new Date(b.date)-new Date(a.date));
   const ti={call:'📞',sms:'💬',email:'✉️',note:'📝'};
-  const nearby=props().filter(x=>x.s===p.s&&x.id!==p.id).slice(0,4);
-  const isHot=p.isHot||hotList().find(h=>h.a===p.a&&!h.archived);
+  const nearby=getProps().filter(x=>x.s===p.s&&x.id!==p.id&&!x.archived).slice(0,4);
+  const isHot=p.isHot||getHot().find(h=>h.a===p.a&&!h.archived);
+
   el('scroll').innerHTML=`
     <div class="det-hero">
-      <div class="det-addr">${p.a||''}${isHot?' <span class="hot-badge">🔥 Hot</span>':''}</div>
-      <div class="det-sub">📍 ${p.sb||'Melbourne'} · ${p.s||''}</div>
-      <span class="badge ${sClass(p.status)}">${(p.status||'').replace(/_/g,' ')}</span>
-    </div>
-    <div class="qa-row">
-      <div class="qa-btn info" onclick="showEditModal(${p.id})">✏️ Edit</div>
-      <div class="qa-btn warn" onclick="toggleHot(${p.id})">${isHot?'💔 Unhot':'🔥 Hot List'}</div>
-      <div class="qa-btn danger" onclick="confirmDelete(${p.id})">🗑️ Delete</div>
-    </div>
-    <div class="action-grid">
-      <button class="act-btn cl" onclick="callPhone('${esc(p.p)}','${esc(p.n)}','${esc(p.a)}',${p.id})"><div class="ai">📞</div><div class="al">Log Call</div></button>
-      <button class="act-btn sm" onclick="openSMS('${esc(p.p)}','${esc(p.n)}','${esc(p.a)}',${p.id})"><div class="ai">💬</div><div class="al">Send SMS</div></button>
-      <button class="act-btn em" onclick="openEmail('${esc(p.e||'')}','${esc(p.n)}','${esc(p.a)}',${p.id})"><div class="ai">✉️</div><div class="al">Email</div></button>
-      <button class="act-btn nt" onclick="openNote(${p.id})"><div class="ai">📝</div><div class="al">Add Note</div></button>
-    </div>
-    <div class="status-row">
-      <span class="status-row-lbl">Status</span>
-      <select onchange="updStatus(${p.id},this.value)">${selOpts(p.status)}</select>
-      <span style="color:var(--dim);font-size:16px">›</span>
-    </div>
-    <div class="info-blk">
-      <div class="info-blk-ttl">Owner</div>
-      <div class="info-r"><div class="ir-lbl">Name</div><div class="ir-val">${p.n||'—'}</div></div>
-      <div class="info-r"><div class="ir-lbl">Phone</div><div class="ir-val">${p.p?`<a href="tel:${p.p}">${p.p}</a>`:'—'}</div></div>
-      <div class="info-r"><div class="ir-lbl">Email</div><div class="ir-val" style="font-size:13px">${p.e?`<a href="mailto:${p.e}">${p.e}</a>`:'—'}</div></div>
-      ${p.po?`<div class="info-r"><div class="ir-lbl">Title</div><div class="ir-val" style="font-size:13px;color:var(--muted)">${p.po}</div></div>`:''}
-      ${p.no?`<div class="info-r"><div class="ir-lbl">Notes</div><div class="ir-val" style="color:var(--muted)">${p.no}</div></div>`:''}
-    </div>
-    <div class="info-blk">
-      <div class="info-blk-ttl">History (${pIx.length})</div>
-      ${pIx.length===0?'<div style="color:var(--dim);font-size:13px;font-style:italic">No interactions yet</div>'
-        :pIx.map(i=>`<div class="tl-item" style="padding:10px 0;border-bottom:0.5px solid var(--blight)"><div class="tl-dot">${ti[i.type]||'📋'}</div><div class="tl-body"><div class="tl-type">${i.type} <span class="badge ${sClass(i.outcome)}" style="font-size:10px">${i.outcome||''}</span></div><div class="tl-time">${new Date(i.date).toLocaleString('en-AU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</div>${i.notes?`<div class="tl-note">${i.notes}</div>`:''}</div></div>`).join('')}
-    </div>
-    ${nearby.length?`<div class="info-blk" style="border-bottom:none"><div class="info-blk-ttl">Same Street</div>${nearby.map(n=>`<div style="display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:0.5px solid var(--blight);cursor:pointer" onclick="openProp(${n.id})"><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${n.a}</div><div style="font-size:12px;color:var(--muted)">${n.n||'Unknown'}</div></div><span class="badge ${sClass(n.status)}" style="font-size:10px">${(n.status||'').replace('_',' ')}</span><span style="color:var(--dim)">›</span></div>`).join('')}</div>`:''}
-    <div style="height:20px"></div>`;
-}
-
-/* ─────────── EDIT MODAL ─────────── */
-function showEditModal(id){
-  const p=props().find(x=>x.id===id);
-  if(!p)return;
-  showSheet(`<div class="sheet">
-    <div class="sh-handle"></div>
-    <div class="sh-hdr">
-      <div><div class="sh-ttl">✏️ Edit Property</div><div class="sh-sub">${p.a||''}</div></div>
-      <button class="sh-close" onclick="closeSheet()">✕</button>
-    </div>
-    <div class="sh-body">
-      <div class="edit-section-hdr">Property</div>
-      <div class="fg"><div class="fl">Address</div><input class="fi" id="ea" value="${(p.a||'').replace(/"/g,'&quot;')}"></div>
-      <div class="fg"><div class="fl">Street Group</div><input class="fi" id="es" value="${(p.s||'').replace(/"/g,'&quot;')}"></div>
-      <div class="edit-section-hdr">Owner Details</div>
-      <div class="fg"><div class="fl">Full Name</div><input class="fi" id="en" value="${(p.n||'').replace(/"/g,'&quot;')}"></div>
-      <div class="fg"><div class="fl">Phone</div><input class="fi" id="ep" type="tel" value="${p.p||''}"></div>
-      <div class="fg"><div class="fl">Email</div><input class="fi" id="ee" type="email" value="${p.e||''}"></div>
-      <div class="edit-section-hdr">Status & Notes</div>
-      <div class="fg"><div class="fl">Status</div><select class="fsel" id="est">${selOpts(p.status)}</select></div>
-      <div class="fg"><div class="fl">Notes</div><textarea class="fta" id="eno" style="min-height:80px">${p.no||''}</textarea></div>
-    </div>
-    <div class="sh-foot">
-      <button class="btn btn-o" onclick="closeSheet()">Cancel</button>
-      <button class="btn btn-g" onclick="saveEdit(${id})">Save Changes</button>
-    </div>
-  </div>`);
-}
-
-function saveEdit(id){
-  const p=props().find(x=>x.id===id);
-  if(!p)return;
-  p.a=el('ea').value;p.s=el('es').value;p.n=el('en').value;
-  p.p=el('ep').value;p.e=el('ee').value;p.status=el('est').value;p.no=el('eno').value;
-  saveProps();closeSheet();toast('Saved ✓');
-  if(S.page==='detail')rDetail();
-  else rProps();
-}
-
-/* ─────────── DELETE ─────────── */
-function confirmDelete(id){
-  const p=props().find(x=>x.id===id);
-  if(!p)return;
-  showSheet(`<div class="sheet">
-    <div class="sh-handle"></div>
-    <div class="sh-hdr">
-      <div><div class="sh-ttl">🗑️ Delete Property</div><div class="sh-sub">${p.a||''}</div></div>
-      <button class="sh-close" onclick="closeSheet()">✕</button>
-    </div>
-    <div class="sh-body">
-      <div style="font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:16px">This will permanently remove <strong style="color:var(--text)">${p.a}</strong> and all its interaction history. This cannot be undone.</div>
-    </div>
-    <div class="sh-foot">
-      <button class="btn btn-o" onclick="closeSheet()">Cancel</button>
-      <button class="btn btn-r" onclick="doDelete(${id})">Delete</button>
-    </div>
-  </div>`);
-}
-
-function doDelete(id){
-  S._props=props().filter(p=>p.id!==id);
-  saveProps();closeSheet();toast('Deleted');
-  if(S.page==='detail')go('props',true);
-  else rProps();
-  badges();
-}
-
-/* ─────────── HOT LIST TOGGLE ─────────── */
-function toggleHot(id){
-  const p=props().find(x=>x.id===id);
-  if(!p)return;
-  const hl=hotList();
-  const existing=hl.find(h=>h.a===p.a);
-  if(existing){
-    existing.archived=!existing.archived;
-    p.isHot=!existing.archived;
-  } else {
-    hl.push({id:Date.now(),a:p.a,n:p.n,p:p.p,no:'',archived:false});
-    p.isHot=true;
-  }
-  saveHot();saveProps();
-  toast(p.isHot?'Added to Hot List 🔥':'Removed from Hot List');
-  if(S.page==='detail')rDetail();
-  else if(S.page==='props')rProps();
-  badges();
-}
-
-/* ─────────── HOT LIST PAGE ─────────── */
-function rHot(){
-  const active=hotList().filter(h=>!h.archived);
-  const archived=hotList().filter(h=>h.archived);
-  el('scroll').innerHTML=`
-    <div class="sticky-hdr">🔥 ${active.length} Active Hot Prospects</div>
-    ${active.length===0?`<div class="empty"><div class="empty-ico">🔥</div><div class="empty-ttl">Hot list is empty</div><div class="empty-sub">Swipe left on any property and tap 🔥 to add it here</div></div>`
-    :active.map(h=>hotRowHTML(h)).join('')}
-    ${archived.length?`
-    <div class="sticky-hdr arch-section" style="margin-top:8px">Archived (${archived.length})</div>
-    <div class="arch-section">
-      ${archived.map(h=>hotRowHTML(h,true)).join('')}
-    </div>`:''}
-    <div style="height:16px"></div>`;
-  setTimeout(attachSwipes,100);
-}
-
-function hotRowHTML(h,isArch=false){
-  return `<div class="swipe-wrap" id="sw-h-${h.id}">
-    <div class="swipe-actions">
-      <div class="swipe-action-btn sa-archive" onclick="archiveHot('${h.id}')"><span class="sai">${isArch?'↩️':'📦'}</span>${isArch?'Restore':'Archive'}</div>
-      <div class="swipe-action-btn sa-delete" onclick="deleteHot('${h.id}')"><span class="sai">🗑️</span>Delete</div>
-    </div>
-    <div class="prop-row" id="pr-h-${h.id}">
-      <div class="prop-row-inner" style="cursor:default">
-        <div class="prop-icon">${isArch?'📦':'🔥'}</div>
-        <div class="prop-body">
-          <div class="prop-addr">${h.a||''}</div>
-          <div class="prop-name">${h.n||'—'}</div>
-          <div class="prop-meta"><span style="font-size:12px;color:var(--dim);font-family:monospace">${h.p||'No phone'}</span></div>
+      <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:14px">
+        <div class="row-avatar ${avatarColor(p.n)}" style="width:52px;height:52px;border-radius:14px;font-size:20px;flex-shrink:0">
+          <span class="row-avatar-initials" style="font-size:18px">${initials(p.n)}</span>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div class="det-addr">${p.a||''}</div>
+          <div class="det-sub">📍 ${p.sb||'Melbourne'} · ${p.s||''}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <span class="badge ${sClass(p.status)}">${(p.status||'').replace(/_/g,' ')}</span>
+            ${isHot?'<span class="badge b-hot">🔥 HOT STOCK</span>':''}
+          </div>
         </div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
-        <button class="ibt" onclick="callPhone('${esc(h.p)}','${esc(h.n)}','${esc(h.a)}',null)">📞</button>
-        <button class="ibt" onclick="openSMS('${esc(h.p)}','${esc(h.n)}','${esc(h.a)}',null)">💬</button>
+      <!-- Contact quick actions -->
+      <div style="display:flex;gap:10px">
+        ${p.p?`<a href="tel:${p.p}" class="btn btn-green btn-sm" style="flex:1;text-decoration:none">📞 Call</a>`:'<div class="btn btn-ghost btn-sm" style="flex:1;opacity:.4">No Phone</div>'}
+        <button class="btn btn-blue btn-sm" style="flex:1" onclick="openSMS('${esc(p.p)}','${esc(p.n)}','${esc(p.a)}',${p.id})">💬 SMS</button>
+        <button class="btn btn-ghost btn-sm" style="flex:1" onclick="openEmail('${esc(p.e||'')}','${esc(p.n)}','${esc(p.a)}',${p.id})">✉️ Email</button>
+      </div>
+    </div>
+
+    <div class="qa-row" style="padding:12px 16px">
+      <div class="qa-btn qa-edit" onclick="showEditModal(${p.id})">✏️ Edit</div>
+      <div class="qa-btn qa-hot" onclick="toggleHot(${p.id})">${isHot?'💔 Unhot':'🔥 Hot List'}</div>
+      <div class="qa-btn" onclick="openNote(${p.id})">📝 Note</div>
+      <div class="qa-btn qa-delete" onclick="confirmDelete(${p.id})">🗑️ Delete</div>
+    </div>
+
+    <div class="status-wrap">
+      <span class="status-lbl">Status</span>
+      <select onchange="updStatus(${p.id},this.value)">${selOpts(p.status)}</select>
+      <span style="color:var(--muted);font-size:16px">›</span>
+    </div>
+
+    <div class="page-section">
+      <div class="info-blk">
+        <div class="info-blk-ttl">Owner Details</div>
+        <div class="info-r"><div class="ir-lbl">Name</div><div class="ir-val">${p.n||'—'}</div></div>
+        <div class="info-r"><div class="ir-lbl">Phone</div><div class="ir-val">${p.p?`<a href="tel:${p.p}">${p.p}</a>`:'—'}</div></div>
+        <div class="info-r"><div class="ir-lbl">Email</div><div class="ir-val" style="font-size:13px">${p.e?`<a href="mailto:${p.e}">${p.e}</a>`:'—'}</div></div>
+        ${p.po?`<div class="info-r"><div class="ir-lbl">Title</div><div class="ir-val" style="font-size:13px;color:var(--muted)">${p.po}</div></div>`:''}
+        ${p.no?`<div class="info-r"><div class="ir-lbl">Notes</div><div class="ir-val" style="color:var(--muted)">${p.no}</div></div>`:''}
+      </div>
+    </div>
+
+    <div class="page-section">
+      <div class="info-blk">
+        <div class="info-blk-ttl">Interaction History (${pIx.length})</div>
+        ${pIx.length===0?'<div style="color:var(--dim);font-size:13px;font-style:italic;padding:4px 0">No interactions yet — log a call to get started</div>'
+          :pIx.map(i=>`<div class="tl"><div class="tl-dot">${ti[i.type]||'📋'}</div><div class="tl-body"><div class="tl-type">${i.type} <span class="badge ${sClass(i.outcome)}" style="font-size:10px">${i.outcome||''}</span></div><div class="tl-time">${new Date(i.date).toLocaleString('en-AU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</div>${i.notes?`<div class="tl-note">${i.notes}</div>`:''}</div></div>`).join('')}
+      </div>
+    </div>
+
+    ${nearby.length?`<div class="page-section"><div class="info-blk"><div class="info-blk-ttl">Same Street (${nearby.length})</div>${nearby.map(n=>`<div style="display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:0.5px solid var(--border2);cursor:pointer" onclick="openProp(${n.id})"><div class="row-avatar ${avatarColor(n.n)}" style="width:34px;height:34px;border-radius:8px;font-size:13px"><span class="row-avatar-initials" style="font-size:12px">${initials(n.n)}</span></div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${n.a}</div><div style="font-size:12px;color:var(--muted)">${n.n||'Unknown'}</div></div><span class="badge ${sClass(n.status)}" style="font-size:10px">${(n.status||'').replace('_',' ')}</span></div>`).join('')}</div></div>`:''}
+    <div style="height:24px"></div>`;
+}
+
+/* ═══ CONTACTS ═══ */
+function rContacts(){
+  const contacts=getContacts();
+  // Also include props with names as contactable
+  const fromProps=getProps().filter(p=>p.n&&p.p&&!p.archived).slice(0,200);
+  const allContacts=[...contacts,...fromProps.map(p=>({id:'p'+p.id,name:p.n,phone:p.p,email:p.e,address:p.a,source:'property',propId:p.id}))];
+  const q=S.cf.q.toLowerCase();
+  const filtered=q?allContacts.filter(c=>(c.name||'').toLowerCase().includes(q)||(c.phone||'').includes(q)||(c.email||'').toLowerCase().includes(q)||(c.address||'').toLowerCase().includes(q)):allContacts;
+
+  el('scroll').innerHTML=`
+    <div class="search-bar">
+      <div class="search-inner">
+        <span class="search-icon">⌕</span>
+        <input type="text" id="csrch" placeholder="Search name, phone, email…"
+          value="${(S.cf.q||'').replace(/"/g,'&quot;')}"
+          autocomplete="off" autocorrect="off" spellcheck="false" autocapitalize="words" inputmode="search">
+        ${S.cf.q?`<span class="search-clear" onclick="S.cf.q='';rContacts()">✕</span>`:''}
+      </div>
+    </div>
+    <div style="padding:8px 16px;font-size:12px;color:var(--muted);border-bottom:0.5px solid var(--border2)">${filtered.length} contacts</div>
+    ${filtered.length===0
+      ?`<div class="empty-state"><div class="empty-ico">👤</div><div class="empty-ttl">No contacts found</div><div class="empty-sub">Add contacts manually or they appear automatically from your properties database</div></div>`
+      :filtered.slice(0,60).map(c=>contactRowHTML(c)).join('')}
+    <div style="height:16px"></div>`;
+
+  const inp=el('csrch');
+  if(inp){
+    const h=function(){S.cf.q=this.value;clearTimeout(_sT);_sT=setTimeout(()=>rContacts(),160);};
+    inp.addEventListener('input',h);inp.addEventListener('keyup',h);
+  }
+  setTimeout(attachSwipes,80);
+}
+
+function contactRowHTML(c){
+  const isProp=c.source==='property';
+  return `<div class="swipe-wrap" id="swc${c.id}">
+    <div class="swipe-actions" style="transform:translateX(100%)">
+      ${isProp?`<div class="sw-btn sw-edit" onclick="openProp(${c.propId})"><span class="swi">→</span>View</div>`
+        :`<div class="sw-btn sw-edit" onclick="showEditContactModal('${c.id}')"><span class="swi">✏️</span>Edit</div>`}
+      <div class="sw-btn sw-call" onclick="callPhone('${esc(c.phone)}','${esc(c.name)}','${esc(c.address||'')}',${c.propId||'null'})"><span class="swi">📞</span>Call</div>
+      ${!isProp?`<div class="sw-btn sw-delete" onclick="deleteContact('${c.id}')"><span class="swi">🗑️</span>Delete</div>`:''}
+    </div>
+    <div class="list-row" id="lrc${c.id}">
+      <div class="list-row-inner" onclick="${isProp?`openProp(${c.propId})`:`openContact('${c.id}')`}">
+        <div class="row-avatar ${avatarColor(c.name)}" style="width:44px;height:44px;border-radius:22px">
+          <span class="row-avatar-initials">${initials(c.name)}</span>
+        </div>
+        <div class="row-body">
+          <div class="row-title">${c.name||'Unknown'}</div>
+          <div class="row-sub">${c.address||c.email||'No address'}</div>
+          <div class="row-meta">
+            ${c.phone?`<span style="font-size:11.5px;color:var(--muted);font-family:monospace">${c.phone}</span>`:''}
+            ${isProp?`<span class="badge b-pipeline" style="font-size:9px">From DB</span>`:'<span class="badge b-interested" style="font-size:9px">Contact</span>'}
+          </div>
+        </div>
+        <div class="row-chevron">›</div>
       </div>
     </div>
   </div>`;
 }
 
-function archiveHot(hid){
-  const h=hotList().find(x=>String(x.id)===String(hid));
-  if(h){h.archived=!h.archived;saveHot();toast(h.archived?'Archived':'Restored');rHot();badges();}
-}
-function deleteHot(hid){
-  S._hot=hotList().filter(x=>String(x.id)!==String(hid));
-  saveHot();toast('Removed');rHot();badges();
+function rContactDetail(){
+  const c=getContacts().find(x=>x.id===S.contactId);
+  if(!c){go('contacts');return;}
+  el('scroll').innerHTML=`
+    <div class="det-hero">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+        <div class="row-avatar ${avatarColor(c.name)}" style="width:60px;height:60px;border-radius:30px;font-size:22px;flex-shrink:0">
+          <span class="row-avatar-initials" style="font-size:20px">${initials(c.name)}</span>
+        </div>
+        <div>
+          <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--text)">${c.name||'Unknown'}</div>
+          ${c.phone?`<div style="font-family:monospace;font-size:16px;color:var(--muted);margin-top:2px">${c.phone}</div>`:''}
+        </div>
+      </div>
+      <div style="display:flex;gap:10px">
+        ${c.phone?`<a href="tel:${c.phone}" class="btn btn-green btn-sm" style="flex:1;text-decoration:none">📞 Call</a>`:''}
+        <button class="btn btn-blue btn-sm" style="flex:1" onclick="openSMS('${esc(c.phone||'')}','${esc(c.name)}','',null)">💬 SMS</button>
+        ${c.email?`<button class="btn btn-ghost btn-sm" style="flex:1" onclick="openEmail('${esc(c.email)}','${esc(c.name)}','',null)">✉️ Email</button>`:''}
+      </div>
+    </div>
+    <div class="qa-row" style="padding:12px 16px">
+      <div class="qa-btn qa-edit" onclick="showEditContactModal('${c.id}')">✏️ Edit</div>
+      <div class="qa-btn qa-delete" onclick="deleteContact('${c.id}')">🗑️ Delete</div>
+    </div>
+    <div class="page-section">
+      <div class="info-blk">
+        <div class="info-blk-ttl">Contact Info</div>
+        <div class="info-r"><div class="ir-lbl">Name</div><div class="ir-val">${c.name||'—'}</div></div>
+        <div class="info-r"><div class="ir-lbl">Phone</div><div class="ir-val">${c.phone?`<a href="tel:${c.phone}">${c.phone}</a>`:'—'}</div></div>
+        <div class="info-r"><div class="ir-lbl">Email</div><div class="ir-val" style="font-size:13px">${c.email?`<a href="mailto:${c.email}">${c.email}</a>`:'—'}</div></div>
+        ${c.address?`<div class="info-r"><div class="ir-lbl">Address</div><div class="ir-val">${c.address}</div></div>`:''}
+        ${c.notes?`<div class="info-r"><div class="ir-lbl">Notes</div><div class="ir-val" style="color:var(--muted)">${c.notes}</div></div>`:''}
+      </div>
+    </div>
+    <div style="height:24px"></div>`;
 }
 
-/* ─────────── APPOINTMENTS ─────────── */
+function deleteContact(id){
+  S._contacts=getContacts().filter(c=>c.id!==id);
+  saveContacts();toast('Contact deleted');go('contacts',true);
+}
+
+function showEditContactModal(id){
+  const c=getContacts().find(x=>x.id===id)||{id:null};
+  showSheet(`<div class="sheet"><div class="sh-handle"></div>
+    <div class="sh-hdr"><div><div class="sh-ttl">✏️ Edit Contact</div></div><button class="sh-close" onclick="closeSheet()">✕</button></div>
+    <div class="sh-body">
+      <div class="fg"><div class="fl">Name</div><input class="fi" id="ecn" value="${esc(c.name||'')}"></div>
+      <div class="fg"><div class="fl">Phone</div><input class="fi" id="ecp" type="tel" value="${c.phone||''}"></div>
+      <div class="fg"><div class="fl">Email</div><input class="fi" id="ece" type="email" value="${c.email||''}"></div>
+      <div class="fg"><div class="fl">Address</div><input class="fi" id="eca" value="${esc(c.address||'')}"></div>
+      <div class="fg"><div class="fl">Notes</div><textarea class="fta" id="ecno" style="min-height:70px">${c.notes||''}</textarea></div>
+    </div>
+    <div class="sh-foot">
+      <button class="btn btn-ghost" onclick="closeSheet()">Cancel</button>
+      <button class="btn btn-gold" onclick="saveContactEdit('${id}')">Save</button>
+    </div>
+  </div>`);
+}
+
+function saveContactEdit(id){
+  let c=getContacts().find(x=>x.id===id);
+  if(!c){c={id:id||('c'+Date.now())};getContacts().push(c);}
+  c.name=el('ecn').value;c.phone=el('ecp').value;c.email=el('ece').value;c.address=el('eca').value;c.notes=el('ecno').value;
+  saveContacts();closeSheet();toast('Contact saved');
+  if(S.page==='contact_detail')rContactDetail();
+  else rContacts();
+}
+
+/* ═══ HOT LIST ═══ */
+function rHot(){
+  const active=getHot().filter(h=>!h.archived);
+  const arch=getHot().filter(h=>h.archived);
+  el('scroll').innerHTML=`
+    <div class="sticky-hdr">🔥 Active — ${active.length}</div>
+    ${active.length===0?`<div class="empty-state"><div class="empty-ico">🔥</div><div class="empty-ttl">Hot list empty</div><div class="empty-sub">Swipe left on any property and tap 🔥 to add here</div></div>`
+    :active.map(h=>hotRowHTML(h)).join('')}
+    ${arch.length?`<div class="sticky-hdr" style="margin-top:8px">Archived — ${arch.length}</div>${arch.map(h=>hotRowHTML(h,true)).join('')}`:''}
+    <div style="height:16px"></div>`;
+  setTimeout(attachSwipes,80);
+}
+
+function hotRowHTML(h,isArch=false){
+  return `<div class="swipe-wrap" id="swh${h.id}">
+    <div class="swipe-actions" style="transform:translateX(100%)">
+      <div class="sw-btn sw-archive" onclick="archiveHot('${h.id}')"><span class="swi">${isArch?'↩️':'📦'}</span>${isArch?'Restore':'Archive'}</div>
+      <div class="sw-btn sw-delete" onclick="deleteHot('${h.id}')"><span class="swi">🗑️</span>Delete</div>
+    </div>
+    <div class="list-row" id="lrh${h.id}" style="${isArch?'opacity:.5':''}">
+      <div class="list-row-inner" style="cursor:default">
+        <div class="row-avatar ${avatarColor(h.n||h.name)}" style="border-radius:12px">
+          <span class="row-avatar-initials">${initials(h.n||h.name)}</span>
+        </div>
+        <div class="row-body">
+          <div class="row-title">${h.a||h.address||''}</div>
+          <div class="row-sub">${h.n||h.name||'—'}</div>
+          <div class="row-meta"><span class="badge ${h.category==='HOT STOCK'?'b-hot':'b-pipeline'}">${h.category||'HOT STOCK'}</span><span style="font-family:monospace;font-size:11.5px;color:var(--dim)">${h.p||h.phone||'No phone'}</span></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+        <button class="ibt" onclick="callPhone('${esc(h.p||h.phone||'')}','${esc(h.n||h.name||'')}','${esc(h.a||h.address||'')}',null)">📞</button>
+        <button class="ibt" onclick="openSMS('${esc(h.p||h.phone||'')}','${esc(h.n||h.name||'')}','${esc(h.a||h.address||'')}',null)">💬</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function archiveHot(hid){const h=getHot().find(x=>String(x.id)===String(hid));if(h){h.archived=!h.archived;saveHot();toast(h.archived?'Archived':'Restored');rHot();badges();}}
+function deleteHot(hid){S._hot=getHot().filter(x=>String(x.id)!==String(hid));saveHot();toast('Removed');rHot();badges();}
+
+/* ═══ APPOINTMENTS ═══ */
 function rAppt(){
-  const all=appts();
+  const all=getAppts();
   const active=all.filter(a=>!a.archived);
   const cf=active.filter(a=>a.status==='CONFIRMED');
   const cx=active.filter(a=>a.status==='CANCELLED');
   const arch=all.filter(a=>a.archived);
   el('scroll').innerHTML=`
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 16px">
-      <div style="background:rgba(72,187,120,.08);border:0.5px solid rgba(72,187,120,.25);border-radius:14px;padding:14px">
-        <div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--green);font-weight:700;margin-bottom:5px">Confirmed</div>
-        <div style="font-family:'Playfair Display',serif;font-size:28px;color:var(--text)">${cf.length}</div>
+      <div style="background:var(--green-bg);border:0.5px solid var(--green);border-radius:16px;padding:16px">
+        <div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:5px">Confirmed</div>
+        <div style="font-family:'Playfair Display',serif;font-size:30px;color:var(--text)">${cf.length}</div>
       </div>
-      <div style="background:rgba(224,82,82,.08);border:0.5px solid rgba(224,82,82,.2);border-radius:14px;padding:14px">
-        <div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--red);font-weight:700;margin-bottom:5px">Cancelled</div>
-        <div style="font-family:'Playfair Display',serif;font-size:28px;color:var(--text)">${cx.length}</div>
+      <div style="background:var(--red-bg);border:0.5px solid var(--red);border-radius:16px;padding:16px">
+        <div style="font-size:10px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:5px">Cancelled</div>
+        <div style="font-family:'Playfair Display',serif;font-size:30px;color:var(--text)">${cx.length}</div>
       </div>
     </div>
-    <div style="padding:0 16px 12px"><button class="btn btn-g" style="width:100%" onclick="showAddAppraisalModal()">+ New Appraisal Appointment</button></div>
+    <div style="padding:0 16px 14px"><button class="btn btn-gold" style="width:100%" onclick="showAddAppraisalModal()">+ New Appraisal Appointment</button></div>
     <div class="sticky-hdr">✅ Confirmed (${cf.length})</div>
-    ${cf.length===0?`<div style="padding:14px 16px;font-size:13px;color:var(--dim);font-style:italic;border-bottom:0.5px solid var(--blight)">No confirmed appointments</div>`
+    ${cf.length===0?`<div style="padding:14px 16px;font-size:13px;color:var(--dim);font-style:italic;border-bottom:0.5px solid var(--border2)">No confirmed appointments</div>`
     :cf.map(a=>apptRowHTML(a)).join('')}
-    <div class="sticky-hdr" style="margin-top:6px">✗ Cancelled (${cx.length})</div>
-    ${cx.map(a=>apptRowHTML(a,0.65)).join('')}
-    ${arch.length?`<div class="sticky-hdr arch-section" style="margin-top:6px">Archived (${arch.length})</div><div class="arch-section">${arch.map(a=>apptRowHTML(a,0.45)).join('')}</div>`:''}
+    ${cx.length?`<div class="sticky-hdr" style="margin-top:8px">✗ Cancelled (${cx.length})</div>${cx.map(a=>apptRowHTML(a,.6)).join('')}`:''}
+    ${arch.length?`<div class="sticky-hdr" style="margin-top:8px;opacity:.6">Archived (${arch.length})</div>${arch.map(a=>apptRowHTML(a,.4)).join('')}`:''}
     <div style="height:16px"></div>`;
-  setTimeout(attachSwipes,100);
+  setTimeout(attachSwipes,80);
 }
 
-function apptRowHTML(a,opacity=1){
-  const isArch=a.archived;
-  return `<div class="swipe-wrap" id="sw-a-${a.id}">
-    <div class="swipe-actions">
-      <div class="swipe-action-btn sa-reschedule" onclick="showRescheduleModal('${a.id}')"><span class="sai">📅</span>Reschedule</div>
-      <div class="swipe-action-btn sa-archive" onclick="archiveAppt('${a.id}')"><span class="sai">${isArch?'↩️':'📦'}</span>${isArch?'Restore':'Archive'}</div>
+function apptRowHTML(a,op=1){
+  return `<div class="swipe-wrap" id="swa${a.id}">
+    <div class="swipe-actions" style="transform:translateX(100%)">
+      <div class="sw-btn sw-reschedule" onclick="showRescheduleModal('${a.id}')"><span class="swi">📅</span>Reschedule</div>
+      <div class="sw-btn sw-archive" onclick="archiveAppt('${a.id}')"><span class="swi">${a.archived?'↩️':'📦'}</span>${a.archived?'Restore':'Archive'}</div>
     </div>
-    <div class="appt-r" id="pr-a-${a.id}" style="opacity:${opacity}">
-      <div class="appt-dot ${a.status==='CONFIRMED'?'cf':isArch?'arch':'cx'}"></div>
-      <div class="appt-body">
-        <div class="appt-addr">${a.a||a.address||''}</div>
-        <div class="appt-nm">${a.n||a.name||''}</div>
-        <div class="appt-dt">${(a.d||a.date||'').split('T')[0]} ${a.time?'· '+a.time:''}</div>
+    <div class="list-row" id="lra${a.id}" style="opacity:${op}">
+      <div class="list-row-inner" style="cursor:pointer" onclick="showRescheduleModal('${a.id}')">
+        <div style="width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:6px;${a.status==='CONFIRMED'?'background:var(--green);box-shadow:0 0 6px var(--green)':'background:var(--red)'}"></div>
+        <div class="row-body">
+          <div class="row-title">${a.a||a.address||''}</div>
+          <div class="row-sub">${a.n||a.name||''}</div>
+          <div class="row-meta">
+            <span class="badge b-appointment">${(a.d||a.date||'').split('T')[0]}${a.time?' · '+a.time:''}</span>
+          </div>
+        </div>
       </div>
-      <div style="display:flex;gap:7px">
+      <div style="display:flex;gap:7px;flex-shrink:0">
         <button class="ibt" onclick="callPhone('${esc(a.p||a.phone||'')}','${esc(a.n||a.name||'')}','${esc(a.a||a.address||'')}',null)">📞</button>
         <button class="ibt" onclick="showRescheduleModal('${a.id}')">📅</button>
       </div>
@@ -819,24 +1083,19 @@ function apptRowHTML(a,opacity=1){
   </div>`;
 }
 
-function archiveAppt(aid){
-  const a=appts().find(x=>String(x.id)===String(aid));
-  if(a){a.archived=!a.archived;saveAppts();toast(a.archived?'Archived':'Restored');rAppt();badges();}
-}
+function archiveAppt(aid){const a=getAppts().find(x=>String(x.id)===String(aid));if(a){a.archived=!a.archived;saveAppts();toast(a.archived?'Archived':'Restored');rAppt();badges();}}
 
 function showRescheduleModal(aid){
-  const a=appts().find(x=>String(x.id)===String(aid));
+  const a=getAppts().find(x=>String(x.id)===String(aid));
   if(!a)return;
   const today=new Date().toISOString().split('T')[0];
-  showSheet(`<div class="sheet">
-    <div class="sh-handle"></div>
-    <div class="sh-hdr">
-      <div><div class="sh-ttl">📅 Reschedule</div><div class="sh-sub">${a.a||a.address||''}</div></div>
-      <button class="sh-close" onclick="closeSheet()">✕</button>
-    </div>
+  showSheet(`<div class="sheet"><div class="sh-handle"></div>
+    <div class="sh-hdr"><div><div class="sh-ttl">📅 Reschedule</div><div class="sh-sub">${a.a||a.address||''}</div></div><button class="sh-close" onclick="closeSheet()">✕</button></div>
     <div class="sh-body">
-      <div class="fg"><div class="fl">Date</div><input class="fi" id="rd" type="date" value="${(a.d||a.date||today).split('T')[0]}"></div>
-      <div class="fg"><div class="fl">Time</div><input class="fi" id="rt" type="time" value="${a.time||'10:00'}"></div>
+      <div class="frow">
+        <div class="fg"><div class="fl">Date</div><input class="fi" id="rd" type="date" value="${(a.d||a.date||today).split('T')[0]}"></div>
+        <div class="fg"><div class="fl">Time</div><input class="fi" id="rt" type="time" value="${a.time||'10:00'}"></div>
+      </div>
       <div class="fg"><div class="fl">Status</div>
         <select class="fsel" id="rs">
           <option value="CONFIRMED" ${a.status==='CONFIRMED'?'selected':''}>Confirmed</option>
@@ -844,151 +1103,318 @@ function showRescheduleModal(aid){
           <option value="PENDING">Pending</option>
         </select>
       </div>
-      <div class="fg"><div class="fl">Notes</div><textarea class="fta" id="rn" style="min-height:70px" placeholder="Any notes for this appointment...">${a.notes||''}</textarea></div>
+      <div class="fg"><div class="fl">Notes</div><textarea class="fta" id="rn" style="min-height:70px">${a.notes||''}</textarea></div>
     </div>
     <div class="sh-foot">
-      <button class="btn btn-o" onclick="closeSheet()">Cancel</button>
-      <button class="btn btn-g" onclick="saveReschedule('${aid}')">Save</button>
+      <button class="btn btn-ghost" onclick="closeSheet()">Cancel</button>
+      <button class="btn btn-gold" onclick="saveReschedule('${aid}')">Save</button>
     </div>
   </div>`);
 }
 
 function saveReschedule(aid){
-  const a=appts().find(x=>String(x.id)===String(aid));
+  const a=getAppts().find(x=>String(x.id)===String(aid));
   if(!a)return;
   a.d=el('rd').value;a.time=el('rt').value;a.status=el('rs').value;a.notes=el('rn').value;
-  saveAppts();closeSheet();toast('Appointment updated ✓');rAppt();
-  if(S.page==='dash')rDash();
+  saveAppts();closeSheet();toast('Appointment updated ✓');
+  if(S.page==='appt')rAppt();else if(S.page==='home')rHome();
 }
 
-/* ─────────── ADD APPRAISAL ─────────── */
-function showAddAppraisalModal(){
-  const today=new Date().toISOString().split('T')[0];
-  showSheet(`<div class="sheet">
-    <div class="sh-handle"></div>
-    <div class="sh-hdr">
-      <div><div class="sh-ttl">📅 New Appraisal</div><div class="sh-sub">Book an appraisal appointment</div></div>
-      <button class="sh-close" onclick="closeSheet()">✕</button>
-    </div>
-    <div class="sh-body">
-      <div class="fg"><div class="fl">Property Address</div><input class="fi" id="aa" placeholder="e.g. 15 Hillview Rd, Greenvale"></div>
-      <div class="fg"><div class="fl">Owner Name</div><input class="fi" id="an" placeholder="Full name"></div>
-      <div class="fg"><div class="fl">Phone</div><input class="fi" id="ap2" type="tel" placeholder="04XX XXX XXX"></div>
-      <div class="frow">
-        <div class="fg"><div class="fl">Date</div><input class="fi" id="ad" type="date" value="${today}"></div>
-        <div class="fg"><div class="fl">Time</div><input class="fi" id="at" type="time" value="10:00"></div>
-      </div>
-      <div class="fg"><div class="fl">Status</div>
-        <select class="fsel" id="astat">
-          <option value="CONFIRMED">Confirmed</option>
-          <option value="PENDING">Pending</option>
-        </select>
-      </div>
-      <div class="fg"><div class="fl">Notes</div><textarea class="fta" id="ano2" style="min-height:70px" placeholder="Preparation notes, vendor situation…"></textarea></div>
-    </div>
-    <div class="sh-foot">
-      <button class="btn btn-o" onclick="closeSheet()">Cancel</button>
-      <button class="btn btn-g" onclick="saveAppraisal()">Book Appointment</button>
-    </div>
-  </div>`);
+/* ═══ STREETS ═══ */
+function rStreets(){
+  const sc={},ss={};
+  getProps().filter(p=>!p.archived).forEach(p=>{
+    sc[p.s]=(sc[p.s]||0)+1;if(!ss[p.s])ss[p.s]={};
+    ss[p.s][p.status]=(ss[p.s][p.status]||0)+1;
+  });
+  const sorted=Object.entries(sc).sort((a,b)=>b[1]-a[1]);
+  el('scroll').innerHTML=`
+    <div class="search-bar"><div class="search-inner"><span class="search-icon">⌕</span><input type="text" id="strsrch" placeholder="Search street…" autocomplete="off" autocorrect="off"></div></div>
+    <div style="padding:8px 16px;font-size:12px;color:var(--muted);border-bottom:0.5px solid var(--border2)">${sorted.length} streets</div>
+    <div id="stlist">${sorted.map(([s,c])=>streetRowHTML(s,c,ss[s]||{})).join('')}</div>
+    <div style="height:16px"></div>`;
+  const inp=el('strsrch');
+  if(inp){inp.addEventListener('input',function(){const q=this.value.toLowerCase();const list=el('stlist');if(list)list.innerHTML=sorted.filter(([s])=>s.toLowerCase().includes(q)).map(([s,c])=>streetRowHTML(s,c,ss[s]||{})).join('');});}
 }
 
-function saveAppraisal(){
-  const addr=el('aa').value.trim();
-  if(!addr){toast('Enter an address');return;}
-  const newA={
-    id:'a'+Date.now(),
-    a:addr,n:el('an').value,p:el('ap2').value,
-    d:el('ad').value,time:el('at').value,
-    status:el('astat').value,notes:el('ano2').value||'',
-    archived:false
-  };
-  appts().push(newA);saveAppts();
-  closeSheet();toast('Appointment booked ✓');
-  badges();
-  if(S.page==='appt')rAppt();
-  else if(S.page==='dash')rDash();
+function streetRowHTML(s,c,st){
+  const int=(st.interested||0)+(st.appointment||0);
+  return `<div class="street-row" onclick="filterAndGo('','${esc(s)}')">
+    <div style="width:38px;height:38px;border-radius:10px;background:var(--gold-bg);border:0.5px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🏘️</div>
+    <div style="flex:1">
+      <div style="font-size:14px;font-weight:600;color:var(--text)">${s}</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:3px">${st.uncontacted||0} uncontacted · ${st.voicemail||0} vm${int?` · <span style="color:var(--green)">${int} interested</span>`:''}</div>
+    </div>
+    <div style="font-size:14px;font-weight:700;color:var(--muted);margin-right:6px">${c}</div>
+    <div style="color:var(--dim)">›</div>
+  </div>`;
 }
 
-/* ─────────── CALL LOG ─────────── */
+/* ═══ CALL LOG ═══ */
 function rLog(){
-  const sorted=[...ix()].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const sorted=[...getIx()].sort((a,b)=>new Date(b.date)-new Date(a.date));
   const ti={call:'📞',sms:'💬',email:'✉️',note:'📝'};
   el('scroll').innerHTML=sorted.length===0
-    ?`<div class="empty"><div class="empty-ico">📋</div><div class="empty-ttl">No interactions yet</div><div class="empty-sub">Log calls, send SMS or add notes from any property page</div></div>`
-    :`<div style="padding:8px 16px;font-size:12px;color:var(--dim);border-bottom:0.5px solid var(--blight)">${sorted.length} interactions</div>
-    ${sorted.map(i=>`<div style="display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-bottom:0.5px solid var(--blight);cursor:pointer" onclick="${i.propertyId?`openProp(${i.propertyId})`:''}">
-      <div class="tl-dot">${ti[i.type]||'📋'}</div>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:13.5px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:3px">${i.address||i.name}</div>
-        <div style="display:flex;align-items:center;gap:7px;margin-bottom:4px">
-          <span class="badge ${sClass(i.outcome)}" style="font-size:10px">${i.outcome||i.type}</span>
-          <span style="font-size:11px;color:var(--dim)">${new Date(i.date).toLocaleString('en-AU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</span>
-        </div>
-        ${i.notes?`<div style="font-size:12.5px;color:var(--muted);font-style:italic;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${i.notes}</div>`:''}
+    ?`<div class="empty-state"><div class="empty-ico">📋</div><div class="empty-ttl">No interactions yet</div><div class="empty-sub">Log calls, send SMS or add notes from any property page</div></div>`
+    :`<div style="padding:8px 16px;font-size:12px;color:var(--muted);border-bottom:0.5px solid var(--border2)">${sorted.length} interactions</div>
+    ${sorted.map(i=>`<div class="list-row" style="cursor:pointer" onclick="${i.propertyId?`openProp(${i.propertyId})`:''}">
+      <div class="tl-dot" style="width:40px;height:40px;flex-shrink:0">${ti[i.type]||'📋'}</div>
+      <div class="row-body">
+        <div class="row-title">${i.address||i.name||''}</div>
+        <div class="row-meta"><span class="badge ${sClass(i.outcome)}" style="font-size:10px">${i.outcome||i.type}</span><span class="row-time">${timeAgo(i.date)}</span></div>
+        ${i.notes?`<div style="font-size:12px;color:var(--muted);font-style:italic;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:3px">${i.notes}</div>`:''}
       </div>
     </div>`).join('')}
     <div style="height:16px"></div>`;
 }
 
-/* ─────────── STREETS ─────────── */
-function rStreets(){
-  const sc={},ss={};
-  props().filter(p=>!p.archived).forEach(p=>{
-    sc[p.s]=(sc[p.s]||0)+1;
-    if(!ss[p.s])ss[p.s]={};
-    ss[p.s][p.status]=(ss[p.s][p.status]||0)+1;
-  });
-  const sorted=Object.entries(sc).sort((a,b)=>b[1]-a[1]);
+/* ═══ BULK SMS ═══ */
+function rBulkSMS(){
+  const pp=getProps().filter(p=>!p.archived&&p.p);
+  const streets=[...new Set(pp.map(p=>p.s))].sort();
+  const selStreet=S.bulkStreet;
+  const inStreet=selStreet?pp.filter(p=>p.s===selStreet):pp;
+  const selected=S.bulkSelected;
+
   el('scroll').innerHTML=`
-    <div style="padding:8px 16px;font-size:12px;color:var(--dim);border-bottom:0.5px solid var(--blight)">${sorted.length} streets</div>
-    ${sorted.map(([s,c])=>{
-      const st=ss[s]||{};
-      const int=(st.interested||0)+(st.appointment||0);
-      return `<div class="street-r" onclick="filterStreet('${esc(s)}')">
-        <div style="flex:1">
-          <div style="font-size:13.5px;font-weight:600;color:var(--text)">${s}</div>
-          <div style="font-size:11.5px;color:var(--dim);margin-top:3px">${st.uncontacted||0} uncontacted · ${st.voicemail||0} vm${int?` · <span style="color:var(--green)">${int} interested</span>`:''}</div>
+    <div style="padding:14px 16px;background:var(--blue-bg);border-bottom:0.5px solid var(--border)">
+      <div style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px">Bulk SMS</div>
+      <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:2px">Send to ${selected.size>0?selected.size:inStreet.length} contacts</div>
+      <div style="font-size:12px;color:var(--muted)">Messages sent one-by-one via your phone's Messages app</div>
+    </div>
+
+    <div style="padding:12px 16px;border-bottom:0.5px solid var(--border2)">
+      <div class="fl">Filter by Street</div>
+      <select class="fsel" id="bulk-street" onchange="S.bulkStreet=this.value;S.bulkSelected=new Set();rBulkSMS()">
+        <option value="">All Streets (${pp.length} with phone)</option>
+        ${streets.map(s=>`<option value="${esc(s)}" ${selStreet===s?'selected':''}>${s}</option>`).join('')}
+      </select>
+    </div>
+
+    <div style="padding:10px 16px;border-bottom:0.5px solid var(--border2)">
+      <div class="fl">SMS Template</div>
+      <select class="fsel" id="bulk-tmpl">
+        <option value="0">Market Update</option>
+        <option value="1">Just Listed</option>
+        <option value="2">Just Sold</option>
+        <option value="3">Home Value Check</option>
+        <option value="4">Custom</option>
+      </select>
+      <textarea class="fta" id="bulk-msg" style="min-height:80px;margin-top:10px" placeholder="Edit message…">Hi [Name], it's Alex from Luxe Properties Melbourne. Properties in your area have been performing well. Would you like a free market appraisal? – Alex 📱</textarea>
+    </div>
+
+    <div style="padding:10px 16px 6px;display:flex;justify-content:space-between;align-items:center">
+      <button class="btn btn-gold btn-sm" onclick="startBulkSend()">▶ Start Sending ${selected.size>0?selected.size:inStreet.length} SMS</button>
+      <button class="btn btn-ghost btn-sm" onclick="S.bulkSelected=selected.size>0?new Set():new Set(inStreet.map(p=>p.id));rBulkSMS()">${selected.size===inStreet.length?'Deselect All':'Select All'}</button>
+    </div>
+
+    <div style="padding:6px 16px 10px;font-size:12px;color:var(--muted)">✓ Check contacts to exclude them, then tap Start Sending. Your phone will open Messages for each one.</div>
+
+    ${inStreet.slice(0,80).map(p=>`
+      <div class="bulk-item">
+        <div class="bulk-check ${selected.has(p.id)?'on':''}" onclick="toggleBulkSel(${p.id})">${selected.has(p.id)?'✓':''}</div>
+        <div class="row-avatar ${avatarColor(p.n)}" style="width:36px;height:36px;border-radius:10px;font-size:13px"><span class="row-avatar-initials" style="font-size:12px">${initials(p.n)}</span></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13.5px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.n||'Unknown'}</div>
+          <div style="font-size:12px;color:var(--muted);font-family:monospace">${p.p}</div>
         </div>
-        <div style="font-size:13px;color:var(--muted)">${c}</div>
-        <div style="color:var(--dim)">›</div>
-      </div>`;
-    }).join('')}
+        <span class="badge ${sClass(p.status)}" style="font-size:10px">${(p.status||'').replace('_',' ')}</span>
+      </div>`).join('')}
     <div style="height:16px"></div>`;
 }
 
-/* ─────────── MODAL SHEET ─────────── */
-function showSheet(html){
-  const d=document.createElement('div');
-  d.className='overlay';d.id='modal';d.innerHTML=html;
-  d.addEventListener('click',e=>{if(e.target===d)closeSheet();});
-  document.body.appendChild(d);
+function toggleBulkSel(id){
+  if(S.bulkSelected.has(id))S.bulkSelected.delete(id);else S.bulkSelected.add(id);
+  rBulkSMS();
 }
-function closeSheet(){const m=el('modal');if(m)m.remove();}
 
-/* ─────────── CALL MODAL ─────────── */
-function callPhone(phone,name,address,propId){
-  showSheet(`<div class="sheet">
-    <div class="sh-handle"></div>
-    <div class="sh-hdr">
-      <div><div class="sh-ttl">📞 Log Call</div><div class="sh-sub">${address}</div></div>
-      <button class="sh-close" onclick="closeSheet()">✕</button>
+let _bulkQueue=[];let _bulkIdx=0;
+function startBulkSend(){
+  const pp=getProps().filter(p=>!p.archived&&p.p);
+  const inStreet=S.bulkStreet?pp.filter(p=>p.s===S.bulkStreet):pp;
+  const toSend=S.bulkSelected.size>0?inStreet.filter(p=>S.bulkSelected.has(p.id)):inStreet;
+  if(toSend.length===0){toast('No contacts selected');return;}
+  const msg=(el('bulk-msg')||{}).value||'Hi [Name], it\'s Alex from Luxe Properties Melbourne. – Alex';
+  _bulkQueue=toSend;_bulkIdx=0;
+  sendNextBulk(msg);
+}
+
+function sendNextBulk(msg){
+  if(_bulkIdx>=_bulkQueue.length){toast(`Bulk SMS complete — sent ${_bulkQueue.length} messages`);return;}
+  const p=_bulkQueue[_bulkIdx];
+  const personalised=msg.replace(/\[Name\]/g,(p.n||'there').split(' ')[0]);
+  const url=`sms:${p.p}?body=${encodeURIComponent(personalised)}`;
+  // Log it
+  getIx().push({id:Date.now(),type:'sms',propertyId:p.id,address:p.a,name:p.n,phone:p.p,outcome:'sent',notes:personalised.substring(0,60),date:new Date().toISOString()});
+  saveIx();
+  _bulkIdx++;
+  window.open(url);
+  setTimeout(()=>{
+    if(_bulkIdx<_bulkQueue.length){
+      if(confirm(`SMS ${_bulkIdx}/${_bulkQueue.length} sent.\n\nNext: ${_bulkQueue[_bulkIdx].n||'Unknown'} — ${_bulkQueue[_bulkIdx].p}\n\nSend next SMS?`))
+        sendNextBulk(msg);
+      else toast(`Paused at ${_bulkIdx}/${_bulkQueue.length}`);
+    } else {
+      toast(`All ${_bulkQueue.length} SMS complete ✓`);
+    }
+  },800);
+}
+
+/* ═══ ADD MENU ═══ */
+function showAddMenu(){
+  showSheet(`<div class="sheet"><div class="sh-handle"></div>
+    <div class="sh-hdr"><div><div class="sh-ttl">Add New</div></div><button class="sh-close" onclick="closeSheet()">✕</button></div>
+    <div class="sh-body" style="display:flex;flex-direction:column;gap:10px">
+      <button class="btn btn-gold" onclick="closeSheet();showAddPropModal()">🏠 New Property</button>
+      <button class="btn btn-blue" onclick="closeSheet();showAddContactFormModal()">👤 New Contact</button>
+      <button class="btn btn-ghost" onclick="closeSheet();showAddAppraisalModal()">📅 New Appraisal</button>
     </div>
+    <div style="height:10px"></div>
+  </div>`);
+}
+
+function showAddPropModal(){
+  showSheet(`<div class="sheet"><div class="sh-handle"></div>
+    <div class="sh-hdr"><div><div class="sh-ttl">🏠 New Property</div></div><button class="sh-close" onclick="closeSheet()">✕</button></div>
     <div class="sh-body">
-      ${phone?`<a class="call-banner" href="tel:${phone}"><div class="call-info"><span class="call-who">${name||'Owner'}</span><span class="call-num">${phone}</span></div><span class="call-dial">📞 Call</span></a>`
-      :`<div style="background:rgba(237,168,48,.1);border:0.5px solid rgba(237,168,48,.3);border-radius:12px;padding:12px 14px;font-size:13.5px;color:var(--amber);margin-bottom:14px">⚠️ No phone number on file</div>`}
+      <div class="fg"><div class="fl">Address</div><input class="fi" id="npa" placeholder="15 Example St, Greenvale VIC 3059"></div>
+      <div class="fg"><div class="fl">Street Group</div><input class="fi" id="nps" placeholder="e.g. HILLVIEW RD"></div>
+      <div class="fg"><div class="fl">Owner Name</div><input class="fi" id="npn" placeholder="Full name"></div>
+      <div class="frow">
+        <div class="fg"><div class="fl">Phone</div><input class="fi" id="npp" type="tel" placeholder="04XX XXX XXX"></div>
+        <div class="fg"><div class="fl">Email</div><input class="fi" id="npe" type="email" placeholder="email@..."></div>
+      </div>
+      <div class="fg"><div class="fl">Status</div><select class="fsel" id="npst">${selOpts('uncontacted')}</select></div>
+    </div>
+    <div class="sh-foot"><button class="btn btn-ghost" onclick="closeSheet()">Cancel</button><button class="btn btn-gold" onclick="addProp()">Add Property</button></div>
+  </div>`);
+}
+
+function addProp(){
+  const addr=el('npa').value.trim();if(!addr){toast('Enter an address');return;}
+  const nm=el('npn').value;
+  const newP={id:Date.now(),a:addr,s:el('nps').value||'CUSTOM',n:nm,p:el('npp').value,e:el('npe').value,no:'',status:el('npst').value,sb:'Melbourne',po:'',lastContact:''};
+  getProps().push(newP);saveProps();closeSheet();toast('Property added ✓');badges();
+}
+
+function showAddContactFormModal(){
+  showSheet(`<div class="sheet"><div class="sh-handle"></div>
+    <div class="sh-hdr"><div><div class="sh-ttl">👤 New Contact</div></div><button class="sh-close" onclick="closeSheet()">✕</button></div>
+    <div class="sh-body">
+      <div class="fg"><div class="fl">Name</div><input class="fi" id="ncn2" placeholder="Full name"></div>
+      <div class="fg"><div class="fl">Phone</div><input class="fi" id="ncp2" type="tel" placeholder="04XX XXX XXX"></div>
+      <div class="fg"><div class="fl">Email</div><input class="fi" id="nce2" type="email" placeholder="email@..."></div>
+      <div class="fg"><div class="fl">Address</div><input class="fi" id="nca2" placeholder="Property address (optional)"></div>
+      <div class="fg"><div class="fl">Notes</div><textarea class="fta" id="ncno2" style="min-height:70px" placeholder="Notes about this contact…"></textarea></div>
+    </div>
+    <div class="sh-foot"><button class="btn btn-ghost" onclick="closeSheet()">Cancel</button><button class="btn btn-gold" onclick="addNewContact()">Add Contact</button></div>
+  </div>`);
+}
+
+function addNewContact(){
+  const nm=el('ncn2').value.trim();if(!nm){toast('Enter a name');return;}
+  const c={id:'c'+Date.now(),name:nm,phone:el('ncp2').value,email:el('nce2').value,address:el('nca2').value,notes:el('ncno2').value};
+  getContacts().push(c);saveContacts();closeSheet();toast('Contact added ✓');badges();
+}
+
+function showAddAppraisalModal(){
+  const today=new Date().toISOString().split('T')[0];
+  showSheet(`<div class="sheet"><div class="sh-handle"></div>
+    <div class="sh-hdr"><div><div class="sh-ttl">📅 New Appraisal</div></div><button class="sh-close" onclick="closeSheet()">✕</button></div>
+    <div class="sh-body">
+      <div class="fg"><div class="fl">Property Address</div><input class="fi" id="axa" placeholder="e.g. 15 Hillview Rd, Greenvale"></div>
+      <div class="fg"><div class="fl">Owner Name</div><input class="fi" id="axn" placeholder="Full name"></div>
+      <div class="fg"><div class="fl">Phone</div><input class="fi" id="axp" type="tel" placeholder="04XX XXX XXX"></div>
+      <div class="frow">
+        <div class="fg"><div class="fl">Date</div><input class="fi" id="axd" type="date" value="${today}"></div>
+        <div class="fg"><div class="fl">Time</div><input class="fi" id="axt" type="time" value="10:00"></div>
+      </div>
+      <div class="fg"><div class="fl">Status</div>
+        <select class="fsel" id="axst"><option value="CONFIRMED">Confirmed</option><option value="PENDING">Pending</option></select>
+      </div>
+      <div class="fg"><div class="fl">Notes</div><textarea class="fta" id="axno" style="min-height:70px" placeholder="Vendor situation, preparation notes…"></textarea></div>
+    </div>
+    <div class="sh-foot"><button class="btn btn-ghost" onclick="closeSheet()">Cancel</button><button class="btn btn-gold" onclick="saveAppraisal()">Book Appraisal</button></div>
+  </div>`);
+}
+
+function saveAppraisal(){
+  const addr=el('axa').value.trim();if(!addr){toast('Enter an address');return;}
+  const newA={id:'ax'+Date.now(),a:addr,n:el('axn').value,p:el('axp').value,d:el('axd').value,time:el('axt').value,status:el('axst').value,notes:el('axno').value||'',archived:false};
+  getAppts().push(newA);saveAppts();closeSheet();toast('Appraisal booked ✓');badges();
+  if(S.page==='appt')rAppt();else if(S.page==='home')rHome();
+}
+
+/* ═══ EDIT MODAL ═══ */
+function showEditModal(id){
+  const p=getProps().find(x=>x.id===id);if(!p)return;
+  showSheet(`<div class="sheet"><div class="sh-handle"></div>
+    <div class="sh-hdr"><div><div class="sh-ttl">✏️ Edit Property</div><div class="sh-sub">${p.a||''}</div></div><button class="sh-close" onclick="closeSheet()">✕</button></div>
+    <div class="sh-body">
+      <div class="fg"><div class="fl">Address</div><input class="fi" id="ea" value="${esc(p.a||'')}"></div>
+      <div class="fg"><div class="fl">Street Group</div><input class="fi" id="es" value="${esc(p.s||'')}"></div>
+      <div class="fg"><div class="fl">Owner Name</div><input class="fi" id="en" value="${esc(p.n||'')}"></div>
+      <div class="frow">
+        <div class="fg"><div class="fl">Phone</div><input class="fi" id="ep" type="tel" value="${p.p||''}"></div>
+        <div class="fg"><div class="fl">Email</div><input class="fi" id="ee" type="email" value="${p.e||''}"></div>
+      </div>
+      <div class="fg"><div class="fl">Status</div><select class="fsel" id="est">${selOpts(p.status)}</select></div>
+      <div class="fg"><div class="fl">Notes</div><textarea class="fta" id="eno" style="min-height:80px">${p.no||''}</textarea></div>
+    </div>
+    <div class="sh-foot"><button class="btn btn-ghost" onclick="closeSheet()">Cancel</button><button class="btn btn-gold" onclick="saveEdit(${id})">Save Changes</button></div>
+  </div>`);
+}
+
+function saveEdit(id){
+  const p=getProps().find(x=>x.id===id);if(!p)return;
+  p.a=el('ea').value;p.s=el('es').value;p.n=el('en').value;
+  p.p=el('ep').value;p.e=el('ee').value;p.status=el('est').value;p.no=el('eno').value;
+  saveProps();closeSheet();toast('Saved ✓');
+  if(S.page==='prop_detail')rPropDetail();else rProps();
+}
+
+/* ═══ DELETE ═══ */
+function confirmDelete(id){
+  const p=getProps().find(x=>x.id===id);if(!p)return;
+  showSheet(`<div class="sheet"><div class="sh-handle"></div>
+    <div class="sh-hdr"><div><div class="sh-ttl">Delete Property?</div><div class="sh-sub">${p.a||''}</div></div><button class="sh-close" onclick="closeSheet()">✕</button></div>
+    <div class="sh-body"><div style="font-size:14px;color:var(--muted);line-height:1.6">This will permanently delete <strong style="color:var(--text)">${p.a}</strong> and all interaction history. This cannot be undone.</div></div>
+    <div class="sh-foot"><button class="btn btn-ghost" onclick="closeSheet()">Cancel</button><button class="btn btn-red" onclick="doDelete(${id})">Delete</button></div>
+  </div>`);
+}
+
+function doDelete(id){
+  S._props=getProps().filter(p=>p.id!==id);saveProps();closeSheet();toast('Deleted');
+  if(S.page==='prop_detail')go('props',true);else rProps();badges();
+}
+
+/* ═══ HOT TOGGLE ═══ */
+function toggleHot(id){
+  const p=getProps().find(x=>x.id===id);if(!p)return;
+  const hl=getHot();const existing=hl.find(h=>h.a===p.a);
+  if(existing){existing.archived=!existing.archived;p.isHot=!existing.archived;}
+  else{hl.push({id:'h'+Date.now(),a:p.a,n:p.n,p:p.p,no:'',archived:false,category:'HOT STOCK'});p.isHot=true;}
+  saveHot();saveProps();toast(p.isHot?'Added to Hot List 🔥':'Removed from Hot List');
+  if(S.page==='prop_detail')rPropDetail();else if(S.page==='props')rProps();
+  badges();
+}
+
+/* ═══ CALL MODAL ═══ */
+function callPhone(phone,name,address,propId){
+  showSheet(`<div class="sheet"><div class="sh-handle"></div>
+    <div class="sh-hdr"><div><div class="sh-ttl">📞 Log Call</div><div class="sh-sub">${address||name}</div></div><button class="sh-close" onclick="closeSheet()">✕</button></div>
+    <div class="sh-body">
+      ${phone?`<a class="call-banner" href="tel:${phone}"><div class="call-banner-info"><span class="call-who">${name||'Owner'}</span><span class="call-num">${phone}</span></div><span class="call-dial">📞 Call Now</span></a>`
+      :`<div style="background:var(--amber-bg);border:0.5px solid var(--amber);border-radius:12px;padding:12px 14px;font-size:13.5px;color:var(--amber);margin-bottom:14px">⚠️ No phone number on file</div>`}
       <div class="fg"><div class="fl">Outcome</div>
         <div class="oc-grid">
-          ${[['voicemail','📵','Voicemail'],['no_answer','🔕','No Answer'],['connected','✅','Connected'],['interested','⭐','Interested'],['not_interested','✗','Not Int.'],['callback','🔄','Callback'],['appointment','📅','Appt Booked'],['hung_up','📴','Hung Up'],['wrong_number','❌','Wrong Num']].map(([v,ic,lb])=>`<div class="oc ${v==='voicemail'?'on':''}" id="oc-${v}" onclick="pickOc('${v}')"><span class="oi">${ic}</span><span class="ol">${lb}</span></div>`).join('')}
+          ${[['voicemail','📵','Voicemail'],['no_answer','🔕','No Answer'],['connected','✅','Connected'],['interested','⭐','Interested'],['not_interested','✗','Not Int.'],['callback','🔄','Callback'],['appointment','📅','Appt Booked'],['hung_up','📴','Hung Up'],['wrong_number','❌','Wrong No.']].map(([v,ic,lb])=>`<div class="oc ${v==='voicemail'?'on':''}" id="oc-${v}" onclick="pickOc('${v}')"><span class="oc-icon">${ic}</span><span class="oc-lbl">${lb}</span></div>`).join('')}
         </div>
       </div>
-      <div class="fg"><div class="fl">Notes</div><textarea class="fta" id="cn" placeholder="What did they say?" style="min-height:80px"></textarea></div>
+      <div class="fg"><div class="fl">Notes</div><textarea class="fta" id="cn" placeholder="What did they say? Key points…" style="min-height:80px"></textarea></div>
       <div class="fg"><div class="fl">Next Action</div><input class="fi" id="cnx" placeholder="e.g. Call back in 2 weeks…"></div>
     </div>
-    <div class="sh-foot">
-      <button class="btn btn-o" onclick="closeSheet()">Cancel</button>
-      <button class="btn btn-g" onclick="saveCall('${esc(phone||'')}','${esc(name||'')}','${esc(address||'')}',${propId||'null'})">Save Log</button>
-    </div>
+    <div class="sh-foot"><button class="btn btn-ghost" onclick="closeSheet()">Cancel</button><button class="btn btn-gold" onclick="saveCall('${esc(phone||'')}','${esc(name||'')}','${esc(address||'')}',${propId||'null'})">Save Log</button></div>
   </div>`);
   window._oc='voicemail';
 }
@@ -998,176 +1424,120 @@ window.pickOc=v=>{document.querySelectorAll('.oc').forEach(e=>e.classList.remove
 function saveCall(phone,name,address,propId){
   const outcome=window._oc||'voicemail';
   const notes=el('cn').value;const nxt=el('cnx').value;
-  ix().push({id:Date.now(),type:'call',propertyId:propId,address,name,phone,outcome,notes:notes+(nxt?'\nNext: '+nxt:''),date:new Date().toISOString()});
+  getIx().push({id:Date.now(),type:'call',propertyId:propId,address,name,phone,outcome,notes:notes+(nxt?'\nNext: '+nxt:''),date:new Date().toISOString()});
   saveIx();
-  if(propId){const p=props().find(x=>x.id===propId);if(p){p.status=outcome;p.lastContact=new Date().toISOString();if(notes)p.no=notes;saveProps();}}
+  if(propId){const p=getProps().find(x=>x.id===propId);if(p){p.status=outcome;p.lastContact=new Date().toISOString();if(notes)p.no=notes;saveProps();}}
   closeSheet();toast('Call logged · '+outcome.replace(/_/g,' '));
-  if(S.page==='detail')rDetail();
+  if(S.page==='prop_detail')rPropDetail();
   badges();
   if(['voicemail','connected','interested','callback'].includes(outcome)&&phone)
     setTimeout(()=>{if(confirm('Send SMS follow-up?'))openSMS(phone,name,address,propId);},250);
 }
 
-/* ─────────── SMS ─────────── */
+/* ═══ SMS ═══ */
 function openSMS(phone,name,address,propId){
   const fn=(name||'').split(' ')[0]||'there';
   const tmpls=[
-    {n:'Market Update',t:`Hi ${fn}, it's Alex from Luxe Properties Melbourne. Properties in your area have been selling really well. If you've been thinking about selling, I'd love to chat about what your home could achieve. Happy to pop by for a no-obligation chat anytime. – Alex 📱`},
-    {n:'Home Value Check',t:`Hi ${fn}, Alex here from Luxe Properties. I noticed some strong sales near your property recently. I can provide you with an up-to-date appraisal at no cost – would you be open to a quick call? – Alex`},
-    {n:'Voicemail Follow-Up',t:`Hi ${fn}, Alex Doguluer from Luxe Properties Melbourne. I tried calling earlier – no worries! I'd love to share some market insights when you get a chance. Feel free to call or text back. – Alex`},
-    {n:'Introduction',t:`Hi ${fn}, my name is Alex from Luxe Properties Melbourne. I work with homeowners in your area and wanted to introduce myself. If you'd like to know what your home is worth, I'm always happy to help. – Alex`}
+    {n:'Market Update',t:`Hi ${fn}, it's Alex from Luxe Properties Melbourne. Properties in your area have been selling really well. If you've been thinking about selling, I'd love to share what your home could achieve right now. Happy to pop by for a no-obligation chat. – Alex 📱`},
+    {n:'Just Sold',t:`Hi ${fn}, Alex here from Luxe Properties. Great news – I just sold a property near yours for a strong result! This shows buyers are very active in your area. Would love to chat about what your home could achieve. – Alex`},
+    {n:'Home Value Check',t:`Hi ${fn}, Alex Doguluer from Luxe Properties Melbourne. I've noticed strong sales near your property and wanted to reach out. I can provide you with a free up-to-date appraisal – would you be open to a quick call? – Alex`},
+    {n:'Voicemail Follow-Up',t:`Hi ${fn}, Alex from Luxe Properties. I tried calling earlier – no worries! Would love to share some local market insights when you have a moment. Feel free to call or text back anytime. – Alex`},
+    {n:'Introduction',t:`Hi ${fn}, my name is Alex Doguluer from Luxe Properties Melbourne. I work with homeowners in your area and wanted to introduce myself. If you'd like to know your home's value or need local property advice, I'm always happy to help. – Alex`}
   ];
-  showSheet(`<div class="sheet">
-    <div class="sh-handle"></div>
-    <div class="sh-hdr">
-      <div><div class="sh-ttl">💬 Send SMS</div><div class="sh-sub">${name||'Owner'} · ${phone||'No phone'}</div></div>
-      <button class="sh-close" onclick="closeSheet()">✕</button>
-    </div>
+  showSheet(`<div class="sheet"><div class="sh-handle"></div>
+    <div class="sh-hdr"><div><div class="sh-ttl">💬 Send SMS</div><div class="sh-sub">${name||'Owner'} · ${phone||'No phone'}</div></div><button class="sh-close" onclick="closeSheet()">✕</button></div>
     <div class="sh-body">
-      <div class="fg"><div class="fl">Template</div>${tmpls.map((t,i)=>`<div class="sms-t ${i===0?'on':''}" id="st-${i}" onclick="pickT(${i})"><div class="sms-t-nm">${t.n}</div><div class="sms-t-pv">${t.t.substring(0,70)}…</div></div>`).join('')}</div>
-      <div class="fg"><div class="fl">Message <span id="slen" style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--dim)">0 chars</span></div>
+      <div class="fg"><div class="fl">Template</div>${tmpls.map((t,i)=>`<div class="sms-tmpl ${i===0?'on':''}" id="st${i}" onclick="pickT(${i})"><div class="sms-tmpl-name">${t.n}</div><div class="sms-tmpl-prev">${t.t.substring(0,72)}…</div></div>`).join('')}</div>
+      <div class="fg"><div class="fl">Message <span id="slen" style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--dim);font-size:11px"></span></div>
         <textarea class="fta" id="smstxt" style="min-height:120px" oninput="updSLen()">${tmpls[0].t}</textarea>
       </div>
     </div>
-    <div class="sh-foot">
-      <button class="btn btn-o" onclick="closeSheet()">Cancel</button>
-      ${phone?`<a class="btn btn-g" id="smslink" href="sms:${phone}?body=${encodeURIComponent(tmpls[0].t)}" onclick="logSMS('${esc(phone)}','${esc(name)}','${esc(address)}',${propId||'null'})">Open Messages →</a>`
-      :`<button class="btn btn-g" disabled style="opacity:.35">No phone number</button>`}
+    <div class="sh-foot"><button class="btn btn-ghost" onclick="closeSheet()">Cancel</button>
+      ${phone?`<a class="btn btn-gold" id="smslink" href="sms:${phone}?body=${encodeURIComponent(tmpls[0].t)}" onclick="logSMS('${esc(phone)}','${esc(name)}','${esc(address)}',${propId||'null'})">Open Messages →</a>`
+      :`<button class="btn btn-gold" disabled style="opacity:.35">No phone number</button>`}
     </div>
   </div>`);
   window._tmpls=tmpls;window._smsPhone=phone;updSLen();
 }
 
-window.pickT=i=>{
-  document.querySelectorAll('.sms-t').forEach(e=>e.classList.remove('on'));
-  const s=el('st-'+i);if(s)s.classList.add('on');
-  const ta=el('smstxt');ta.value=window._tmpls[i].t;ta.dispatchEvent(new Event('input'));
-};
-window.updSLen=()=>{
-  const ta=el('smstxt');if(!ta)return;
-  el('slen').textContent=ta.value.length+' chars';
-  const lnk=el('smslink');if(lnk)lnk.href=`sms:${window._smsPhone}?body=${encodeURIComponent(ta.value)}`;
-};
+window.pickT=i=>{document.querySelectorAll('.sms-tmpl').forEach(e=>e.classList.remove('on'));const s=el('st'+i);if(s)s.classList.add('on');const ta=el('smstxt');ta.value=window._tmpls[i].t;ta.dispatchEvent(new Event('input'));};
+window.updSLen=()=>{const ta=el('smstxt');if(!ta)return;el('slen').textContent=ta.value.length+' chars';const lnk=el('smslink');if(lnk)lnk.href=`sms:${window._smsPhone}?body=${encodeURIComponent(ta.value)}`;};
 
 function logSMS(phone,name,address,propId){
   const txt=(el('smstxt')||{}).value||'';
-  ix().push({id:Date.now(),type:'sms',propertyId:propId,address,name,phone,outcome:'sent',notes:txt.substring(0,120),date:new Date().toISOString()});
+  getIx().push({id:Date.now(),type:'sms',propertyId:propId,address,name,phone,outcome:'sent',notes:txt.substring(0,120),date:new Date().toISOString()});
   saveIx();closeSheet();toast('SMS opened in Messages');badges();
 }
 
-/* ─────────── EMAIL ─────────── */
+/* ═══ EMAIL ═══ */
 function openEmail(email,name,address,propId){
   const fn=(name||'').split(' ')[0]||'there';
   const subj=`Your property at ${address} — Luxe Properties Melbourne`;
-  const body=`Hi ${fn},\n\nI hope you're well. My name is Alex Doguluer, Director of Luxe Properties Melbourne.\n\nI specialise in the local area and have been following market activity near your property closely. Properties in your street have been performing strongly, and I'd love to share some insights with you.\n\nWould you be open to a quick 15-minute call? I'd be happy to provide a complimentary market appraisal with no obligation.\n\nWarm regards,\nAlex Doguluer\nDirector | Luxe Properties Melbourne\n📱 0400 000 000`;
-  showSheet(`<div class="sheet">
-    <div class="sh-handle"></div>
-    <div class="sh-hdr">
-      <div><div class="sh-ttl">✉️ Email</div><div class="sh-sub">${name||'Owner'}</div></div>
-      <button class="sh-close" onclick="closeSheet()">✕</button>
-    </div>
+  const body=`Hi ${fn},\n\nI hope you're well. My name is Alex Doguluer, Director of Luxe Properties Melbourne.\n\nI specialise in the local area and have been following market activity near your property closely. Properties in your area have been performing strongly, and I'd love to share some insights with you.\n\nWould you be open to a quick 15-minute call? I'd be happy to provide a complimentary market appraisal with no obligation.\n\nWarm regards,\nAlex Doguluer\nDirector | Luxe Properties Melbourne\n📱 0400 000 000\n🌐 luxepropertiesmelbourne.com.au`;
+  showSheet(`<div class="sheet"><div class="sh-handle"></div>
+    <div class="sh-hdr"><div><div class="sh-ttl">✉️ Email</div><div class="sh-sub">${name||'Owner'}</div></div><button class="sh-close" onclick="closeSheet()">✕</button></div>
     <div class="sh-body">
-      ${!email?`<div style="background:rgba(237,168,48,.1);border:0.5px solid rgba(237,168,48,.3);border-radius:11px;padding:12px;font-size:13px;color:var(--amber);margin-bottom:14px">⚠️ No email on file — enter below</div>`:''}
+      ${!email?`<div style="background:var(--amber-bg);border:0.5px solid var(--amber);border-radius:11px;padding:12px;font-size:13px;color:var(--amber);margin-bottom:14px">⚠️ No email on file — enter below</div>`:''}
       <div class="fg"><div class="fl">To</div><input class="fi" id="eto" value="${(email||'').replace(/"/g,'')}" type="email" placeholder="email@example.com"></div>
       <div class="fg"><div class="fl">Subject</div><input class="fi" id="esub" value="${subj.replace(/"/g,'&quot;')}"></div>
       <div class="fg"><div class="fl">Message</div><textarea class="fta" id="ebody" style="min-height:180px">${body}</textarea></div>
     </div>
-    <div class="sh-foot">
-      <button class="btn btn-o" onclick="closeSheet()">Cancel</button>
-      <button class="btn btn-g" onclick="sendEmail('${esc(name)}','${esc(address)}',${propId||'null'})">Open Mail →</button>
-    </div>
+    <div class="sh-foot"><button class="btn btn-ghost" onclick="closeSheet()">Cancel</button><button class="btn btn-gold" onclick="sendEmail('${esc(name)}','${esc(address)}',${propId||'null'})">Open Mail →</button></div>
   </div>`);
 }
 
 function sendEmail(name,address,propId){
   const to=el('eto').value,sub=el('esub').value,body=el('ebody').value;
   window.open(`mailto:${to}?subject=${encodeURIComponent(sub)}&body=${encodeURIComponent(body)}`);
-  ix().push({id:Date.now(),type:'email',propertyId:propId,address,name,outcome:'sent',notes:sub,date:new Date().toISOString()});
+  getIx().push({id:Date.now(),type:'email',propertyId:propId,address,name,outcome:'sent',notes:sub,date:new Date().toISOString()});
   saveIx();closeSheet();toast('Email opened');
 }
 
-/* ─────────── NOTE ─────────── */
+/* ═══ NOTE ═══ */
 function openNote(propId){
-  const p=props().find(x=>x.id===propId);
-  showSheet(`<div class="sheet">
-    <div class="sh-handle"></div>
-    <div class="sh-hdr">
-      <div><div class="sh-ttl">📝 Note</div><div class="sh-sub">${p?.a||''}</div></div>
-      <button class="sh-close" onclick="closeSheet()">✕</button>
-    </div>
+  const p=getProps().find(x=>x.id===propId);
+  showSheet(`<div class="sheet"><div class="sh-handle"></div>
+    <div class="sh-hdr"><div><div class="sh-ttl">📝 Add Note</div><div class="sh-sub">${p?.a||''}</div></div><button class="sh-close" onclick="closeSheet()">✕</button></div>
     <div class="sh-body">
       <div class="fg"><div class="fl">Note</div><textarea class="fta" id="ntxt" style="min-height:120px" placeholder="Add details…">${p?.no||''}</textarea></div>
       <div class="fg"><div class="fl">Status</div><select class="fsel" id="nst">${selOpts(p?.status)}</select></div>
     </div>
-    <div class="sh-foot">
-      <button class="btn btn-o" onclick="closeSheet()">Cancel</button>
-      <button class="btn btn-g" onclick="saveNote(${propId})">Save</button>
-    </div>
+    <div class="sh-foot"><button class="btn btn-ghost" onclick="closeSheet()">Cancel</button><button class="btn btn-gold" onclick="saveNote(${propId})">Save</button></div>
   </div>`);
 }
 
 function saveNote(propId){
-  const p=props().find(x=>x.id===propId);if(!p)return;
+  const p=getProps().find(x=>x.id===propId);if(!p)return;
   p.no=el('ntxt').value;p.status=el('nst').value;saveProps();
-  ix().push({id:Date.now(),type:'note',propertyId:propId,address:p.a,name:p.n,outcome:'noted',notes:p.no,date:new Date().toISOString()});
-  saveIx();closeSheet();toast('Saved');
-  if(S.page==='detail')rDetail();
+  getIx().push({id:Date.now(),type:'note',propertyId:propId,address:p.a,name:p.n,outcome:'noted',notes:p.no,date:new Date().toISOString()});
+  saveIx();closeSheet();toast('Note saved ✓');
+  if(S.page==='prop_detail')rPropDetail();
 }
 
-/* ─────────── ADD CONTACT ─────────── */
-function showAddModal(){
-  showSheet(`<div class="sheet">
-    <div class="sh-handle"></div>
-    <div class="sh-hdr">
-      <div><div class="sh-ttl">+ Add Contact</div></div>
-      <button class="sh-close" onclick="closeSheet()">✕</button>
-    </div>
-    <div class="sh-body">
-      <div class="fg"><div class="fl">Address</div><input class="fi" id="nca" placeholder="15 Example St, Greenvale VIC 3059"></div>
-      <div class="fg"><div class="fl">Owner Name</div><input class="fi" id="ncn" placeholder="Full name"></div>
-      <div class="frow">
-        <div class="fg"><div class="fl">Phone</div><input class="fi" id="ncp" type="tel" placeholder="04XX XXX XXX"></div>
-        <div class="fg"><div class="fl">Email</div><input class="fi" id="nce" type="email" placeholder="email@..."></div>
-      </div>
-      <div class="fg"><div class="fl">Street Group</div><input class="fi" id="ncs" placeholder="e.g. HILLVIEW RD"></div>
-    </div>
-    <div class="sh-foot">
-      <button class="btn btn-o" onclick="closeSheet()">Cancel</button>
-      <button class="btn btn-g" onclick="addContact()">Add</button>
-    </div>
-  </div>`);
-}
+/* ═══ SHEET & UTILS ═══ */
+function showSheet(html){const d=document.createElement('div');d.className='overlay';d.id='modal';d.innerHTML=html;d.addEventListener('click',e=>{if(e.target===d)closeSheet();});document.body.appendChild(d);}
+function closeSheet(){const m=el('modal');if(m)m.remove();}
 
-function addContact(){
-  const addr=el('nca').value.trim();if(!addr){toast('Enter an address');return;}
-  const nm=el('ncn').value;
-  const newP={id:Date.now(),a:addr,s:el('ncs').value||'CUSTOM',n:nm,p:el('ncp').value,e:el('nce').value,no:'',status:'uncontacted',sb:'Melbourne',po:'',lastContact:''};
-  props().push(newP);saveProps();closeSheet();toast('Contact added');badges();
-}
-
-/* ─────────── UTILS ─────────── */
 function updStatus(propId,v){
-  const p=props().find(x=>x.id===propId);
+  const p=getProps().find(x=>x.id===propId);
   if(p){p.status=v;p.lastContact=new Date().toISOString();saveProps();toast('Status: '+v.replace(/_/g,' '));}
 }
 
 function toast(msg){
   const t=el('toast');t.innerHTML='✓ '+msg;t.classList.add('on');
-  clearTimeout(window._toast);window._toast=setTimeout(()=>t.classList.remove('on'),2600);
+  clearTimeout(window._toast);window._toast=setTimeout(()=>t.classList.remove('on'),2800);
 }
 
 function badges(){
-  const pp=props().filter(p=>!p.archived);
-  el('bd-props').textContent=pp.length.toLocaleString();
-  el('bd-hot').textContent=hotList().filter(h=>!h.archived).length;
-  const cfA=appts().filter(a=>a.status==='CONFIRMED'&&!a.archived).length;
-  const ab=el('bd-appt');ab.textContent=cfA;ab.style.display=cfA?'':'none';
-  const ixl=ix().length;const lb=el('bd-log');
-  lb.textContent=ixl;lb.style.display=ixl?'':'none';
+  const smartCount=getProps().filter(p=>!p.archived&&(p.isHot||getHot().find(h=>h.a===p.a&&!h.archived)||['callback','interested'].includes(p.status))).length;
+  el('bd-smart').textContent=smartCount>99?'99+':smartCount;
+  const cf=getAppts().filter(a=>a.status==='CONFIRMED'&&!a.archived).length;
+  const ab=el('bd-appt');ab.textContent=cf;ab.style.display=cf?'':'none';
 }
 
-/* INIT */
-go('dash');
+/* ═══ INIT ═══ */
+renderTopbar();
+go('home');
 </script>
 </body>
 </html>

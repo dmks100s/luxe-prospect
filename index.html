@@ -587,54 +587,195 @@ function filterAndGo(status,street){
 /* ═══ SMART CALLS ═══ */
 function rSmart(){
   const pp=getProps().filter(p=>!p.archived);
-  // Hot stock = hotlist + interested + callback
   const hotStock=pp.filter(p=>p.isHot||getHot().find(h=>h.a===p.a&&!h.archived));
-  const callList=pp.filter(p=>['callback','interested','voicemail'].includes(p.status));
+  const callList=pp.filter(p=>['callback','interested','voicemail','no_answer'].includes(p.status));
   const all=[...new Map([...hotStock,...callList].map(p=>[p.id,p])).values()];
+  const archivedSmart=JSON.parse(localStorage.getItem('smart_arch')||'[]');
+  const active=all.filter(p=>!archivedSmart.includes(p.id));
+  const archived=all.filter(p=>archivedSmart.includes(p.id));
   const made=getIx().filter(i=>i.type==='call').length;
-  const today=getIx().filter(i=>{const d=new Date(i.date);const n=new Date();return d.toDateString()===n.toDateString()&&i.type==='call';}).length;
+  const today=getIx().filter(i=>{const d=new Date(i.date);return d.toDateString()===new Date().toDateString()&&i.type==='call';}).length;
+  if(!window._smartSel)window._smartSel=new Set();
+  const sel=window._smartSel;
 
   el('scroll').innerHTML=`
     <div class="smart-call-hdr">
       <div style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:6px">Smart Call List</div>
-      <div class="smart-call-title">${all.length} Priority Leads</div>
-      <div class="smart-call-sub">Highest propensity contacts to call today</div>
+      <div class="smart-call-title">${active.length} Priority Leads</div>
+      <div class="smart-call-sub">Highest propensity contacts — tap to call, swipe to archive</div>
       <div class="call-progress">
         <span class="call-prog-lbl">Today's calls</span>
-        <span class="call-prog-val">${today} / ${Math.min(all.length,50)}</span>
+        <span class="call-prog-val">${today} / ${Math.min(active.length,50)}</span>
       </div>
     </div>
 
-    <div style="padding:12px 16px 6px;display:flex;gap:8px">
-      <button class="btn btn-gold btn-sm" onclick="go('bulk_sms')" style="flex:1">💬 Bulk SMS All</button>
+    <!-- BULK TOOLBAR -->
+    <div style="padding:10px 16px;background:var(--card);border-bottom:0.5px solid var(--border);display:flex;gap:8px;align-items:center">
+      <button class="btn btn-ghost btn-sm" onclick="toggleSmartSelectAll()" style="flex:0;padding:9px 14px">${sel.size===active.length&&active.length>0?'Deselect All':'Select All'}</button>
+      ${sel.size>0?`
+        <button class="btn btn-gold btn-sm" style="flex:1" onclick="smartBulkSMS()">💬 SMS ${sel.size} selected</button>
+        <button class="btn btn-ghost btn-sm" style="flex:0;padding:9px 12px" onclick="smartBulkArchive()">📦 Archive</button>
+      `:`<div style="flex:1;font-size:12px;color:var(--dim)">Tick contacts to bulk SMS or archive</div>`}
     </div>
 
-    <div class="sticky-hdr">RECENT PROPENSITY ACTIVITY ${all.length}/${all.length}</div>
-    ${all.length===0
-      ?`<div class="empty-state"><div class="empty-ico">📞</div><div class="empty-ttl">No priority calls right now</div><div class="empty-sub">Contacts marked as Hot List, Interested or Callback will appear here</div></div>`
-      :all.map(p=>{
-        const isHot=p.isHot||getHot().find(h=>h.a===p.a&&!h.archived);
-        const cat=isHot?'HOT STOCK':p.status==='callback'?'PIPELINE':p.status==='voicemail'?'RECENT CALL':'';
-        const lastIx=getIx().filter(i=>i.propertyId===p.id).sort((a,b)=>new Date(b.date)-new Date(a.date))[0];
-        return `<div class="list-row" style="cursor:pointer" onclick="openProp(${p.id})">
-          <div class="row-avatar ${avatarColor(p.n)}" style="width:44px;height:44px;border-radius:12px">
-            <span class="row-avatar-initials">${initials(p.n)}</span>
-          </div>
-          <div class="row-body">
-            <div class="row-title">${p.n||'Unknown Owner'}</div>
-            <div class="row-sub">${p.a||''}</div>
-            <div class="row-meta">
-              ${cat?`<span class="badge ${cat==='HOT STOCK'?'b-hot':cat==='PIPELINE'?'b-pipeline':'b-voicemail'}">${cat}</span>`:''}
-              ${lastIx?`<span class="row-time">${timeAgo(lastIx.date).toUpperCase()}</span>`:'<span class="row-time">NOT CALLED</span>'}
-            </div>
-          </div>
-          <div style="display:flex;gap:6px;flex-shrink:0">
-            <button class="ibt" onclick="event.stopPropagation();callPhone('${esc(p.p)}','${esc(p.n)}','${esc(p.a)}',${p.id})">📞</button>
-            <button class="ibt" onclick="event.stopPropagation();openSMS('${esc(p.p)}','${esc(p.n)}','${esc(p.a)}',${p.id})">💬</button>
-          </div>
-        </div>`;
-      }).join('')}
+    <!-- RECENT SALES ALERTS -->
+    ${renderRecentSalesAlerts()}
+
+    <div class="sticky-hdr">PRIORITY CALLS — ${active.length}</div>
+    ${active.length===0
+      ?`<div class="empty-state"><div class="empty-ico">📞</div><div class="empty-ttl">No priority calls right now</div><div class="empty-sub">Contacts marked as Hot List, Interested, Callback or Voicemail appear here</div></div>`
+      :active.map(p=>smartRowHTML(p,sel,archivedSmart,false)).join('')}
+
+    ${archived.length?`
+    <div class="sticky-hdr" style="margin-top:8px;opacity:.6">ARCHIVED — ${archived.length}</div>
+    <div style="opacity:.55">${archived.map(p=>smartRowHTML(p,sel,archivedSmart,true)).join('')}</div>
+    `:''}
     <div style="height:16px"></div>`;
+  setTimeout(attachSwipes,80);
+}
+
+function renderRecentSalesAlerts(){
+  const alerts=JSON.parse(localStorage.getItem('recent_sales_alerts')||'[]');
+  if(!alerts.length)return '';
+  return `<div style="background:var(--amber-bg);border-bottom:0.5px solid var(--amber);padding:12px 16px">
+    <div style="font-size:11px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px">🏡 Recent Area Activity — Auto Smart Calls</div>
+    ${alerts.slice(0,3).map(a=>`
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid rgba(237,168,48,.2)">
+        <span style="font-size:18px">${a.type==='sold'?'🔨':'🏠'}</span>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a.address}</div>
+          <div style="font-size:11.5px;color:var(--muted)">${a.type==='sold'?'Recently sold':'New listing'} · ${a.street} · ${a.nearby} nearby owners</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="addStreetToSmartCalls('${a.street.replace(/'/g,"\\'")}')">Add to list</button>
+      </div>`).join('')}
+    <button style="background:none;border:none;color:var(--blue);font-size:12.5px;font-weight:600;cursor:pointer;padding:6px 0;font-family:'DM Sans',sans-serif" onclick="showAddRecentSaleModal()">+ Add recent sale/listing manually</button>
+  </div>`;
+}
+
+function smartRowHTML(p,sel,archived,isArch){
+  const isHot=p.isHot||getHot().find(h=>h.a===p.a&&!h.archived);
+  const cat=isHot?'HOT STOCK':p.status==='callback'?'PIPELINE':p.status==='voicemail'?'VOICEMAIL':p.status==='interested'?'INTERESTED':'CALL';
+  const catClass=isHot?'b-hot':p.status==='callback'?'b-pipeline':p.status==='interested'?'b-interested':'b-voicemail';
+  const lastIx=getIx().filter(i=>i.propertyId===p.id).sort((a,b)=>new Date(b.date)-new Date(a.date))[0];
+  const checked=sel.has(p.id);
+  return `<div class="swipe-wrap" id="sws${p.id}">
+    <div class="swipe-actions" style="transform:translateX(100%)">
+      <div class="sw-btn sw-call" onclick="callPhone('${esc(p.p)}','${esc(p.n)}','${esc(p.a)}',${p.id})"><span class="swi">📞</span>Call</div>
+      <div class="sw-btn sw-archive" onclick="archiveSmart(${p.id})">${isArch?`<span class="swi">↩️</span>Restore`:`<span class="swi">📦</span>Archive`}</div>
+    </div>
+    <div class="list-row" id="lrs${p.id}">
+      <div class="bulk-check ${checked?'on':''}" onclick="toggleSmartSel(${p.id})" style="flex-shrink:0;margin-right:2px">${checked?'✓':''}</div>
+      <div class="list-row-inner" onclick="openProp(${p.id})">
+        <div class="row-avatar ${avatarColor(p.n)}" style="border-radius:12px">
+          <span class="row-avatar-initials">${initials(p.n)}</span>
+        </div>
+        <div class="row-body">
+          <div class="row-title">${p.n||'Unknown Owner'}</div>
+          <div class="row-sub" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.a||''}</div>
+          <div class="row-meta">
+            <span class="badge ${catClass}">${cat}</span>
+            ${lastIx?`<span class="row-time">${timeAgo(lastIx.date).toUpperCase()}</span>`:'<span class="row-time">NOT CALLED</span>'}
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0">
+        <button class="ibt" onclick="callPhone('${esc(p.p)}','${esc(p.n)}','${esc(p.a)}',${p.id})">📞</button>
+        <button class="ibt" onclick="openSMS('${esc(p.p)}','${esc(p.n)}','${esc(p.a)}',${p.id})">💬</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function toggleSmartSel(id){
+  if(!window._smartSel)window._smartSel=new Set();
+  if(window._smartSel.has(id))window._smartSel.delete(id);
+  else window._smartSel.add(id);
+  rSmart();
+}
+
+function toggleSmartSelectAll(){
+  if(!window._smartSel)window._smartSel=new Set();
+  const archivedSmart=JSON.parse(localStorage.getItem('smart_arch')||'[]');
+  const pp=getProps().filter(p=>!p.archived);
+  const hotStock=pp.filter(p=>p.isHot||getHot().find(h=>h.a===p.a&&!h.archived));
+  const callList=pp.filter(p=>['callback','interested','voicemail','no_answer'].includes(p.status));
+  const all=[...new Map([...hotStock,...callList].map(p=>[p.id,p])).values()];
+  const active=all.filter(p=>!archivedSmart.includes(p.id));
+  if(window._smartSel.size===active.length)window._smartSel=new Set();
+  else window._smartSel=new Set(active.map(p=>p.id));
+  rSmart();
+}
+
+function smartBulkSMS(){
+  if(!window._smartSel||window._smartSel.size===0)return;
+  const selected=getProps().filter(p=>window._smartSel.has(p.id)&&p.p);
+  if(!selected.length){toast('No contacts with phone numbers selected');return;}
+  S.bulkStreet='';
+  window._bulkOverride=selected;
+  go('bulk_sms');
+}
+
+function smartBulkArchive(){
+  if(!window._smartSel||window._smartSel.size===0)return;
+  const arch=JSON.parse(localStorage.getItem('smart_arch')||'[]');
+  window._smartSel.forEach(id=>{ if(!arch.includes(id))arch.push(id); });
+  localStorage.setItem('smart_arch',JSON.stringify(arch));
+  window._smartSel=new Set();
+  toast(`Archived ${window._smartSel.size||'selected'} contacts`);
+  rSmart();
+}
+
+function archiveSmart(id){
+  const arch=JSON.parse(localStorage.getItem('smart_arch')||'[]');
+  const idx=arch.indexOf(id);
+  if(idx>=0)arch.splice(idx,1);
+  else arch.push(id);
+  localStorage.setItem('smart_arch',JSON.stringify(arch));
+  toast(idx>=0?'Restored to Smart Calls':'Archived from Smart Calls');
+  rSmart();
+}
+
+function addStreetToSmartCalls(street){
+  const pp=getProps().filter(p=>p.s===street&&!p.archived&&p.p);
+  const arch=JSON.parse(localStorage.getItem('smart_arch')||'[]');
+  pp.forEach(p=>{const i=arch.indexOf(p.id);if(i>=0)arch.splice(i,1);});
+  localStorage.setItem('smart_arch',JSON.stringify(arch));
+  toast(`Added ${pp.length} contacts from ${street} to Smart Calls`);
+  rSmart();
+}
+
+function showAddRecentSaleModal(){
+  const streets=[...new Set(getProps().map(p=>p.s))].sort();
+  showSheet(`<div class="sheet"><div class="sh-handle"></div>
+    <div class="sh-hdr"><div><div class="sh-ttl">🏡 Add Area Activity</div><div class="sh-sub">Trigger smart calls for a street</div></div><button class="sh-close" onclick="closeSheet()">✕</button></div>
+    <div class="sh-body">
+      <div class="fg"><div class="fl">Activity Type</div>
+        <select class="fsel" id="rat"><option value="sold">Property Sold</option><option value="listed">New Listing</option></select>
+      </div>
+      <div class="fg"><div class="fl">Property Address</div><input class="fi" id="raa" placeholder="e.g. 45 Hillview Rd, Greenvale"></div>
+      <div class="fg"><div class="fl">Street (from your database)</div>
+        <select class="fsel" id="ras"><option value="">Select street…</option>${streets.map(s=>`<option value="${esc(s)}">${s}</option>`).join('')}</select>
+      </div>
+      <div style="background:var(--blue-bg);border:0.5px solid var(--blue);border-radius:12px;padding:12px;font-size:13px;color:var(--text2);line-height:1.6;margin-top:4px">
+        💡 This will add all property owners on that street to your Smart Call list so you can reach out about the recent activity.
+      </div>
+    </div>
+    <div class="sh-foot">
+      <button class="btn btn-ghost" onclick="closeSheet()">Cancel</button>
+      <button class="btn btn-gold" onclick="saveRecentSale()">Add to Smart Calls</button>
+    </div>
+  </div>`);
+}
+
+function saveRecentSale(){
+  const type=el('rat').value,addr=el('raa').value,street=el('ras').value;
+  if(!addr||!street){toast('Fill in address and street');return;}
+  const alerts=JSON.parse(localStorage.getItem('recent_sales_alerts')||'[]');
+  const nearby=getProps().filter(p=>p.s===street&&!p.archived).length;
+  alerts.unshift({type,address:addr,street,nearby,date:new Date().toISOString()});
+  localStorage.setItem('recent_sales_alerts',JSON.stringify(alerts.slice(0,10)));
+  addStreetToSmartCalls(street);
+  closeSheet();toast(`${type==='sold'?'Sale':'Listing'} added — ${nearby} nearby owners added to Smart Calls`);
 }
 
 /* ═══ PROPERTIES ═══ */
@@ -862,131 +1003,90 @@ function rPropDetail(){
 /* ═══ CONTACTS ═══ */
 function rContacts(){
   const contacts=getContacts();
-  // Also include props with names as contactable
-  const fromProps=getProps().filter(p=>p.n&&p.p&&!p.archived).slice(0,200);
-  const allContacts=[...contacts,...fromProps.map(p=>({id:'p'+p.id,name:p.n,phone:p.p,email:p.e,address:p.a,source:'property',propId:p.id}))];
-  const q=S.cf.q.toLowerCase();
-  const filtered=q?allContacts.filter(c=>(c.name||'').toLowerCase().includes(q)||(c.phone||'').includes(q)||(c.email||'').toLowerCase().includes(q)||(c.address||'').toLowerCase().includes(q)):allContacts;
+  const fromProps=getProps().filter(p=>p.n&&p.p&&!p.archived);
+  const propContacts=fromProps.map(p=>({
+    id:'p'+p.id,name:p.n,phone:p.p,email:p.e||'',
+    address:p.a,source:'property',propId:p.id,status:p.status
+  }));
+  const allC=[...contacts,...propContacts];
+  const q=(S.cf.q||'').toLowerCase().trim();
+  const filtered=q
+    ?allC.filter(c=>
+        (c.name||'').toLowerCase().includes(q)||
+        (c.phone||'').replace(/\s/g,'').includes(q.replace(/\s/g,''))||
+        (c.email||'').toLowerCase().includes(q)||
+        (c.address||'').toLowerCase().includes(q))
+    :allC;
 
   el('scroll').innerHTML=`
     <div class="search-bar">
       <div class="search-inner">
         <span class="search-icon">⌕</span>
-        <input type="text" id="csrch" placeholder="Search name, phone, email…"
+        <input type="text" id="csrch"
+          placeholder="Search name, phone, email…"
           value="${(S.cf.q||'').replace(/"/g,'&quot;')}"
-          autocomplete="off" autocorrect="off" spellcheck="false" autocapitalize="words" inputmode="search">
-        ${S.cf.q?`<span class="search-clear" onclick="S.cf.q='';rContacts()">✕</span>`:''}
+          autocomplete="off" autocorrect="off" spellcheck="false"
+          autocapitalize="words" inputmode="search"
+          style="font-size:16px">
+        ${S.cf.q?`<span class="search-clear" id="c-clear" onclick="clearContactSearch()">✕</span>`:''}
       </div>
     </div>
-    <div style="padding:8px 16px;font-size:12px;color:var(--muted);border-bottom:0.5px solid var(--border2)">${filtered.length} contacts</div>
-    ${filtered.length===0
-      ?`<div class="empty-state"><div class="empty-ico">👤</div><div class="empty-ttl">No contacts found</div><div class="empty-sub">Add contacts manually or they appear automatically from your properties database</div></div>`
-      :filtered.slice(0,60).map(c=>contactRowHTML(c)).join('')}
+    <div style="padding:8px 16px;font-size:12px;color:var(--muted);border-bottom:0.5px solid var(--border2);display:flex;justify-content:space-between">
+      <span>${filtered.length} contacts${q?' matching "'+S.cf.q+'"':''}</span>
+      <button class="section-link" onclick="showAddContactFormModal()">+ Add</button>
+    </div>
+    <div id="clist">
+      ${filtered.length===0
+        ?`<div class="empty-state"><div class="empty-ico">👤</div><div class="empty-ttl">${q?'No results for "'+S.cf.q+'"':'No contacts yet'}</div><div class="empty-sub">${q?'Try a different name, phone number or email':'Add contacts manually or they appear from your properties database'}</div></div>`
+        :filtered.slice(0,80).map(c=>contactRowHTML(c)).join('')}
+    </div>
     <div style="height:16px"></div>`;
 
+  // Attach search with robust iOS handling
   const inp=el('csrch');
   if(inp){
-    const h=function(){S.cf.q=this.value;clearTimeout(_sT);_sT=setTimeout(()=>rContacts(),160);};
-    inp.addEventListener('input',h);inp.addEventListener('keyup',h);
+    inp.focus();
+    const doSearch=function(){
+      const v=this.value;
+      S.cf.q=v;
+      // Update clear button
+      let clr=el('c-clear');
+      if(v&&!clr){
+        const span=document.createElement('span');
+        span.id='c-clear';span.className='search-clear';
+        span.textContent='✕';span.onclick=clearContactSearch;
+        inp.parentNode.appendChild(span);
+      } else if(!v&&clr){clr.remove();}
+      // Re-render list only (not whole page)
+      clearTimeout(window._cT);
+      window._cT=setTimeout(()=>{
+        const q2=v.toLowerCase().trim();
+        const contacts=getContacts();
+        const fromProps2=getProps().filter(p=>p.n&&p.p&&!p.archived);
+        const propC2=fromProps2.map(p=>({id:'p'+p.id,name:p.n,phone:p.p,email:p.e||'',address:p.a,source:'property',propId:p.id,status:p.status}));
+        const allC2=[...contacts,...propC2];
+        const ff=q2?allC2.filter(c=>(c.name||'').toLowerCase().includes(q2)||(c.phone||'').replace(/\s/g,'').includes(q2.replace(/\s/g,''))||(c.email||'').toLowerCase().includes(q2)||(c.address||'').toLowerCase().includes(q2)):allC2;
+        const list=el('clist');
+        if(list)list.innerHTML=ff.length===0
+          ?`<div class="empty-state"><div class="empty-ico">🔍</div><div class="empty-ttl">No results</div></div>`
+          :ff.slice(0,80).map(c=>contactRowHTML(c)).join('');
+        // Update count
+        const cnt=document.querySelector('#scroll > div:nth-child(2)');
+        if(cnt)cnt.querySelector('span').textContent=ff.length+' contacts'+(q2?' matching "'+v+'"':'');
+        setTimeout(attachSwipes,50);
+      },150);
+    };
+    ['input','keyup','keydown','change','compositionend'].forEach(ev=>inp.addEventListener(ev,doSearch));
+    setTimeout(()=>inp.focus(),100);
   }
   setTimeout(attachSwipes,80);
 }
 
-function contactRowHTML(c){
-  const isProp=c.source==='property';
-  return `<div class="swipe-wrap" id="swc${c.id}">
-    <div class="swipe-actions" style="transform:translateX(100%)">
-      ${isProp?`<div class="sw-btn sw-edit" onclick="openProp(${c.propId})"><span class="swi">→</span>View</div>`
-        :`<div class="sw-btn sw-edit" onclick="showEditContactModal('${c.id}')"><span class="swi">✏️</span>Edit</div>`}
-      <div class="sw-btn sw-call" onclick="callPhone('${esc(c.phone)}','${esc(c.name)}','${esc(c.address||'')}',${c.propId||'null'})"><span class="swi">📞</span>Call</div>
-      ${!isProp?`<div class="sw-btn sw-delete" onclick="deleteContact('${c.id}')"><span class="swi">🗑️</span>Delete</div>`:''}
-    </div>
-    <div class="list-row" id="lrc${c.id}">
-      <div class="list-row-inner" onclick="${isProp?`openProp(${c.propId})`:`openContact('${c.id}')`}">
-        <div class="row-avatar ${avatarColor(c.name)}" style="width:44px;height:44px;border-radius:22px">
-          <span class="row-avatar-initials">${initials(c.name)}</span>
-        </div>
-        <div class="row-body">
-          <div class="row-title">${c.name||'Unknown'}</div>
-          <div class="row-sub">${c.address||c.email||'No address'}</div>
-          <div class="row-meta">
-            ${c.phone?`<span style="font-size:11.5px;color:var(--muted);font-family:monospace">${c.phone}</span>`:''}
-            ${isProp?`<span class="badge b-pipeline" style="font-size:9px">From DB</span>`:'<span class="badge b-interested" style="font-size:9px">Contact</span>'}
-          </div>
-        </div>
-        <div class="row-chevron">›</div>
-      </div>
-    </div>
-  </div>`;
-}
-
-function rContactDetail(){
-  const c=getContacts().find(x=>x.id===S.contactId);
-  if(!c){go('contacts');return;}
-  el('scroll').innerHTML=`
-    <div class="det-hero">
-      <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
-        <div class="row-avatar ${avatarColor(c.name)}" style="width:60px;height:60px;border-radius:30px;font-size:22px;flex-shrink:0">
-          <span class="row-avatar-initials" style="font-size:20px">${initials(c.name)}</span>
-        </div>
-        <div>
-          <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--text)">${c.name||'Unknown'}</div>
-          ${c.phone?`<div style="font-family:monospace;font-size:16px;color:var(--muted);margin-top:2px">${c.phone}</div>`:''}
-        </div>
-      </div>
-      <div style="display:flex;gap:10px">
-        ${c.phone?`<a href="tel:${c.phone}" class="btn btn-green btn-sm" style="flex:1;text-decoration:none">📞 Call</a>`:''}
-        <button class="btn btn-blue btn-sm" style="flex:1" onclick="openSMS('${esc(c.phone||'')}','${esc(c.name)}','',null)">💬 SMS</button>
-        ${c.email?`<button class="btn btn-ghost btn-sm" style="flex:1" onclick="openEmail('${esc(c.email)}','${esc(c.name)}','',null)">✉️ Email</button>`:''}
-      </div>
-    </div>
-    <div class="qa-row" style="padding:12px 16px">
-      <div class="qa-btn qa-edit" onclick="showEditContactModal('${c.id}')">✏️ Edit</div>
-      <div class="qa-btn qa-delete" onclick="deleteContact('${c.id}')">🗑️ Delete</div>
-    </div>
-    <div class="page-section">
-      <div class="info-blk">
-        <div class="info-blk-ttl">Contact Info</div>
-        <div class="info-r"><div class="ir-lbl">Name</div><div class="ir-val">${c.name||'—'}</div></div>
-        <div class="info-r"><div class="ir-lbl">Phone</div><div class="ir-val">${c.phone?`<a href="tel:${c.phone}">${c.phone}</a>`:'—'}</div></div>
-        <div class="info-r"><div class="ir-lbl">Email</div><div class="ir-val" style="font-size:13px">${c.email?`<a href="mailto:${c.email}">${c.email}</a>`:'—'}</div></div>
-        ${c.address?`<div class="info-r"><div class="ir-lbl">Address</div><div class="ir-val">${c.address}</div></div>`:''}
-        ${c.notes?`<div class="info-r"><div class="ir-lbl">Notes</div><div class="ir-val" style="color:var(--muted)">${c.notes}</div></div>`:''}
-      </div>
-    </div>
-    <div style="height:24px"></div>`;
-}
-
-function deleteContact(id){
-  S._contacts=getContacts().filter(c=>c.id!==id);
-  saveContacts();toast('Contact deleted');go('contacts',true);
-}
-
-function showEditContactModal(id){
-  const c=getContacts().find(x=>x.id===id)||{id:null};
-  showSheet(`<div class="sheet"><div class="sh-handle"></div>
-    <div class="sh-hdr"><div><div class="sh-ttl">✏️ Edit Contact</div></div><button class="sh-close" onclick="closeSheet()">✕</button></div>
-    <div class="sh-body">
-      <div class="fg"><div class="fl">Name</div><input class="fi" id="ecn" value="${esc(c.name||'')}"></div>
-      <div class="fg"><div class="fl">Phone</div><input class="fi" id="ecp" type="tel" value="${c.phone||''}"></div>
-      <div class="fg"><div class="fl">Email</div><input class="fi" id="ece" type="email" value="${c.email||''}"></div>
-      <div class="fg"><div class="fl">Address</div><input class="fi" id="eca" value="${esc(c.address||'')}"></div>
-      <div class="fg"><div class="fl">Notes</div><textarea class="fta" id="ecno" style="min-height:70px">${c.notes||''}</textarea></div>
-    </div>
-    <div class="sh-foot">
-      <button class="btn btn-ghost" onclick="closeSheet()">Cancel</button>
-      <button class="btn btn-gold" onclick="saveContactEdit('${id}')">Save</button>
-    </div>
-  </div>`);
-}
-
-function saveContactEdit(id){
-  let c=getContacts().find(x=>x.id===id);
-  if(!c){c={id:id||('c'+Date.now())};getContacts().push(c);}
-  c.name=el('ecn').value;c.phone=el('ecp').value;c.email=el('ece').value;c.address=el('eca').value;c.notes=el('ecno').value;
-  saveContacts();closeSheet();toast('Contact saved');
-  if(S.page==='contact_detail')rContactDetail();
-  else rContacts();
+function clearContactSearch(){
+  S.cf.q='';
+  const inp=el('csrch');
+  if(inp){inp.value='';inp.focus();}
+  rContacts();
 }
 
 /* ═══ HOT LIST ═══ */
@@ -1170,50 +1270,73 @@ function rLog(){
 
 /* ═══ BULK SMS ═══ */
 function rBulkSMS(){
-  const pp=getProps().filter(p=>!p.archived&&p.p);
-  const streets=[...new Set(pp.map(p=>p.s))].sort();
-  const selStreet=S.bulkStreet;
-  const inStreet=selStreet?pp.filter(p=>p.s===selStreet):pp;
+  const override=window._bulkOverride;
+  const pp=override||getProps().filter(p=>!p.archived&&p.p);
+  const streets=[...new Set(getProps().filter(p=>!p.archived&&p.p).map(p=>p.s))].sort();
+  const selStreet=override?'':S.bulkStreet;
+  const inStreet=override?pp:(selStreet?pp.filter(p=>p.s===selStreet):pp);
+  if(!S.bulkSelected)S.bulkSelected=new Set();
   const selected=S.bulkSelected;
+
+  const bulkTmpls=[
+    {n:'Market Update',t:"Hi [Name], it's Alex from Luxe Properties Melbourne. Properties in your area have been performing really well lately. If you've been thinking about selling, I'd love to chat about what your home could achieve. Happy to pop by for a no-obligation chat anytime. – Alex 📱"},
+    {n:'Just Sold Nearby',t:"Hi [Name], Alex Doguluer from Luxe Properties here. I just sold a property on your street for a strong result! Buyer demand in your area is very high right now. I'd love to share what your home could achieve – would you be open to a quick call? – Alex"},
+    {n:'Just Listed Nearby',t:"Hi [Name], it's Alex from Luxe Properties Melbourne. A property just hit the market near you and we're already getting great buyer interest. Now is a great time to discuss your own property's value. Can I call you for a quick chat? – Alex"},
+    {n:'Free Appraisal Offer',t:"Hi [Name], Alex here from Luxe Properties Melbourne. I'd love to provide you with a free, no-obligation market appraisal for your property. Our recent results in your area have been outstanding. Would you be open to a quick 15-min visit? – Alex"},
+    {n:'Introduction',t:"Hi [Name], my name is Alex Doguluer from Luxe Properties Melbourne. I work closely with homeowners in your area and wanted to introduce myself. If you'd ever like to know your home's value or need local property advice, I'm always happy to help. – Alex"},
+    {n:'Re-engagement',t:"Hi [Name], Alex from Luxe Properties here. It's been a while since we last spoke – I hope all is well! The property market in your area has shifted and I'd love to share an updated appraisal with you when you have a moment. – Alex"},
+    {n:'Auction Result',t:"Hi [Name], Alex Doguluer from Luxe Properties. We just achieved a fantastic auction result for a property near you! This shows strong buyer competition in your area right now. Would you like to know what your home could achieve? – Alex"},
+    {n:'Custom',t:"Hi [Name], "}
+  ];
+  const selTmpl=window._bulkTmpl!=null?window._bulkTmpl:0;
 
   el('scroll').innerHTML=`
     <div style="padding:14px 16px;background:var(--blue-bg);border-bottom:0.5px solid var(--border)">
       <div style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px">Bulk SMS</div>
-      <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:2px">Send to ${selected.size>0?selected.size:inStreet.length} contacts</div>
-      <div style="font-size:12px;color:var(--muted)">Messages sent one-by-one via your phone's Messages app</div>
+      <div style="font-size:17px;font-weight:700;color:var(--text);margin-bottom:2px)">Send to ${selected.size>0?selected.size:inStreet.length} contacts</div>
+      <div style="font-size:12px;color:var(--muted)">Messages sent one-by-one via your iPhone's Messages app</div>
     </div>
 
-    <div style="padding:12px 16px;border-bottom:0.5px solid var(--border2)">
+    ${!override?`<div style="padding:12px 16px;border-bottom:0.5px solid var(--border2)">
       <div class="fl">Filter by Street</div>
-      <select class="fsel" id="bulk-street" onchange="S.bulkStreet=this.value;S.bulkSelected=new Set();rBulkSMS()">
-        <option value="">All Streets (${pp.length} with phone)</option>
+      <select class="fsel" id="bulk-street" onchange="S.bulkStreet=this.value;S.bulkSelected=new Set();window._bulkOverride=null;rBulkSMS()">
+        <option value="">All Streets (${getProps().filter(p=>!p.archived&&p.p).length} with phone)</option>
         ${streets.map(s=>`<option value="${esc(s)}" ${selStreet===s?'selected':''}>${s}</option>`).join('')}
       </select>
-    </div>
+    </div>`:'<div style="padding:10px 16px;background:var(--gold-bg);border-bottom:0.5px solid var(--gold);font-size:12.5px;color:var(--gold)">📋 Sending to ${pp.length} selected contacts from Smart Calls <button style="float:right;background:none;border:none;color:var(--gold);font-size:12px;cursor:pointer;font-family:DM Sans,sans-serif" onclick="window._bulkOverride=null;rBulkSMS()">✕ Clear</button></div>'}
 
-    <div style="padding:10px 16px;border-bottom:0.5px solid var(--border2)">
+    <!-- TEMPLATE SELECTOR -->
+    <div style="padding:12px 16px 6px;border-bottom:0.5px solid var(--border2)">
       <div class="fl">SMS Template</div>
-      <select class="fsel" id="bulk-tmpl">
-        <option value="0">Market Update</option>
-        <option value="1">Just Listed</option>
-        <option value="2">Just Sold</option>
-        <option value="3">Home Value Check</option>
-        <option value="4">Custom</option>
-      </select>
-      <textarea class="fta" id="bulk-msg" style="min-height:80px;margin-top:10px" placeholder="Edit message…">Hi [Name], it's Alex from Luxe Properties Melbourne. Properties in your area have been performing well. Would you like a free market appraisal? – Alex 📱</textarea>
+      <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:12px">
+        ${bulkTmpls.map((t,i)=>`
+          <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;border:1.5px solid ${selTmpl===i?'var(--gold)':'var(--border)'};border-radius:12px;background:${selTmpl===i?'var(--gold-bg)':'var(--card2)'};cursor:pointer" onclick="window._bulkTmpl=${i};window._bulkMsg=null;rBulkSMS()">
+            <div style="width:18px;height:18px;border-radius:50%;border:2px solid ${selTmpl===i?'var(--gold)':'var(--border)'};background:${selTmpl===i?'var(--gold)':'transparent'};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              ${selTmpl===i?'<span style="color:#000;font-size:11px;font-weight:700">✓</span>':''}
+            </div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px">${t.n}</div>
+              <div style="font-size:11.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.t.substring(0,60)}…</div>
+            </div>
+          </div>`).join('')}
+      </div>
+
+      <div class="fl">Message Preview <span style="font-weight:400;color:var(--dim);text-transform:none;letter-spacing:0" id="bulk-len"></span></div>
+      <textarea class="fta" id="bulk-msg" style="min-height:100px" oninput="window._bulkMsg=this.value;el('bulk-len').textContent=this.value.length+' chars'">${window._bulkMsg||bulkTmpls[selTmpl].t}</textarea>
+      <div style="font-size:12px;color:var(--dim);margin-top:6px">Use [Name] to auto-personalise with the contact's first name</div>
     </div>
 
-    <div style="padding:10px 16px 6px;display:flex;justify-content:space-between;align-items:center">
-      <button class="btn btn-gold btn-sm" onclick="startBulkSend()">▶ Start Sending ${selected.size>0?selected.size:inStreet.length} SMS</button>
-      <button class="btn btn-ghost btn-sm" onclick="S.bulkSelected=selected.size>0?new Set():new Set(inStreet.map(p=>p.id));rBulkSMS()">${selected.size===inStreet.length?'Deselect All':'Select All'}</button>
+    <!-- SEND BUTTON + SELECT ALL -->
+    <div style="padding:12px 16px;display:flex;gap:8px;border-bottom:0.5px solid var(--border2)">
+      <button class="btn btn-gold" style="flex:2" onclick="startBulkSend()">▶ Send ${selected.size>0?selected.size:inStreet.length} SMS</button>
+      <button class="btn btn-ghost" style="flex:1;font-size:13px" onclick="toggleBulkAll()">${selected.size===inStreet.length&&inStreet.length>0?'Deselect All':'Select All'}</button>
     </div>
 
-    <div style="padding:6px 16px 10px;font-size:12px;color:var(--muted)">✓ Check contacts to exclude them, then tap Start Sending. Your phone will open Messages for each one.</div>
-
-    ${inStreet.slice(0,80).map(p=>`
+    <!-- CONTACT LIST -->
+    ${inStreet.slice(0,100).map(p=>`
       <div class="bulk-item">
         <div class="bulk-check ${selected.has(p.id)?'on':''}" onclick="toggleBulkSel(${p.id})">${selected.has(p.id)?'✓':''}</div>
-        <div class="row-avatar ${avatarColor(p.n)}" style="width:36px;height:36px;border-radius:10px;font-size:13px"><span class="row-avatar-initials" style="font-size:12px">${initials(p.n)}</span></div>
+        <div class="row-avatar ${avatarColor(p.n)}" style="width:36px;height:36px;border-radius:10px;font-size:13px;flex-shrink:0"><span class="row-avatar-initials" style="font-size:12px">${initials(p.n)}</span></div>
         <div style="flex:1;min-width:0">
           <div style="font-size:13.5px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.n||'Unknown'}</div>
           <div style="font-size:12px;color:var(--muted);font-family:monospace">${p.p}</div>
@@ -1221,43 +1344,66 @@ function rBulkSMS(){
         <span class="badge ${sClass(p.status)}" style="font-size:10px">${(p.status||'').replace('_',' ')}</span>
       </div>`).join('')}
     <div style="height:16px"></div>`;
+
+  // Update char count
+  setTimeout(()=>{const ta=el('bulk-msg');if(ta)el('bulk-len').textContent=ta.value.length+' chars';},50);
 }
 
-function toggleBulkSel(id){
-  if(S.bulkSelected.has(id))S.bulkSelected.delete(id);else S.bulkSelected.add(id);
+function toggleBulkAll(){
+  const override=window._bulkOverride;
+  const pp=override||getProps().filter(p=>!p.archived&&p.p);
+  const inStreet=override?pp:(S.bulkStreet?pp.filter(p=>p.s===S.bulkStreet):pp);
+  if(!S.bulkSelected)S.bulkSelected=new Set();
+  if(S.bulkSelected.size===inStreet.length)S.bulkSelected=new Set();
+  else S.bulkSelected=new Set(inStreet.map(p=>p.id));
   rBulkSMS();
 }
 
-let _bulkQueue=[];let _bulkIdx=0;
-function startBulkSend(){
-  const pp=getProps().filter(p=>!p.archived&&p.p);
-  const inStreet=S.bulkStreet?pp.filter(p=>p.s===S.bulkStreet):pp;
-  const toSend=S.bulkSelected.size>0?inStreet.filter(p=>S.bulkSelected.has(p.id)):inStreet;
-  if(toSend.length===0){toast('No contacts selected');return;}
-  const msg=(el('bulk-msg')||{}).value||'Hi [Name], it\'s Alex from Luxe Properties Melbourne. – Alex';
-  _bulkQueue=toSend;_bulkIdx=0;
-  sendNextBulk(msg);
+function toggleBulkSel(id){
+  if(!S.bulkSelected)S.bulkSelected=new Set();
+  if(S.bulkSelected.has(id))S.bulkSelected.delete(id);
+  else S.bulkSelected.add(id);
+  // Update just the checkbox without full re-render
+  const cb=document.querySelector(`[onclick="toggleBulkSel(${id})"]`);
+  if(cb){cb.classList.toggle('on',S.bulkSelected.has(id));cb.textContent=S.bulkSelected.has(id)?'✓':'';}
+  // Update send button count
+  const btn=document.querySelector('[onclick="startBulkSend()"]');
+  if(btn)btn.textContent=`▶ Send ${S.bulkSelected.size>0?S.bulkSelected.size:'all'} SMS`;
 }
 
-function sendNextBulk(msg){
-  if(_bulkIdx>=_bulkQueue.length){toast(`Bulk SMS complete — sent ${_bulkQueue.length} messages`);return;}
-  const p=_bulkQueue[_bulkIdx];
-  const personalised=msg.replace(/\[Name\]/g,(p.n||'there').split(' ')[0]);
-  const url=`sms:${p.p}?body=${encodeURIComponent(personalised)}`;
-  // Log it
-  getIx().push({id:Date.now(),type:'sms',propertyId:p.id,address:p.a,name:p.n,phone:p.p,outcome:'sent',notes:personalised.substring(0,60),date:new Date().toISOString()});
+let _bQ=[],_bI=0,_bMsg='';
+function startBulkSend(){
+  const override=window._bulkOverride;
+  const pp=override||getProps().filter(p=>!p.archived&&p.p);
+  const inStreet=override?pp:(S.bulkStreet?pp.filter(p=>p.s===S.bulkStreet):pp);
+  if(!S.bulkSelected)S.bulkSelected=new Set();
+  const toSend=S.bulkSelected.size>0?inStreet.filter(p=>S.bulkSelected.has(p.id)):inStreet;
+  if(!toSend.length){toast('No contacts to send to');return;}
+  const tmplIdx=window._bulkTmpl!=null?window._bulkTmpl:0;
+  const bulkTmpls=["Hi [Name], it's Alex from Luxe Properties Melbourne. Properties in your area have been performing really well lately. If you've been thinking about selling, I'd love to chat about what your home could achieve. Happy to pop by for a no-obligation chat anytime. – Alex 📱","Hi [Name], Alex Doguluer from Luxe Properties here. I just sold a property on your street for a strong result! Buyer demand in your area is very high right now. I'd love to share what your home could achieve – would you be open to a quick call? – Alex","Hi [Name], it's Alex from Luxe Properties Melbourne. A property just hit the market near you and we're already getting great buyer interest. Now is a great time to discuss your own property's value. Can I call you for a quick chat? – Alex","Hi [Name], Alex here from Luxe Properties Melbourne. I'd love to provide you with a free, no-obligation market appraisal for your property. Our recent results in your area have been outstanding. Would you be open to a quick 15-min visit? – Alex","Hi [Name], my name is Alex Doguluer from Luxe Properties Melbourne. I work closely with homeowners in your area and wanted to introduce myself. If you'd ever like to know your home's value or need local property advice, I'm always happy to help. – Alex","Hi [Name], Alex from Luxe Properties here. It's been a while since we last spoke – I hope all is well! The property market in your area has shifted and I'd love to share an updated appraisal with you when you have a moment. – Alex","Hi [Name], Alex Doguluer from Luxe Properties. We just achieved a fantastic auction result for a property near you! This shows strong buyer competition in your area right now. Would you like to know what your home could achieve? – Alex","Hi [Name], "];
+  _bMsg=window._bulkMsg||bulkTmpls[tmplIdx]||bulkTmpls[0];
+  _bQ=toSend;_bI=0;
+  sendNextBulk();
+}
+
+function sendNextBulk(){
+  if(_bI>=_bQ.length){toast(`✅ All ${_bQ.length} SMS complete`);S.bulkSelected=new Set();window._bulkOverride=null;return;}
+  const p=_bQ[_bI];
+  const msg=_bMsg.replace(/\[Name\]/g,(p.n||'there').split(' ')[0]);
+  const url=`sms:${p.p}?body=${encodeURIComponent(msg)}`;
+  getIx().push({id:Date.now(),type:'sms',propertyId:p.id,address:p.a,name:p.n,phone:p.p,outcome:'sent',notes:msg.substring(0,80),date:new Date().toISOString()});
   saveIx();
-  _bulkIdx++;
-  window.open(url);
-  setTimeout(()=>{
-    if(_bulkIdx<_bulkQueue.length){
-      if(confirm(`SMS ${_bulkIdx}/${_bulkQueue.length} sent.\n\nNext: ${_bulkQueue[_bulkIdx].n||'Unknown'} — ${_bulkQueue[_bulkIdx].p}\n\nSend next SMS?`))
-        sendNextBulk(msg);
-      else toast(`Paused at ${_bulkIdx}/${_bulkQueue.length}`);
-    } else {
-      toast(`All ${_bulkQueue.length} SMS complete ✓`);
-    }
-  },800);
+  _bI++;
+  window.open(url,'_self');
+  if(_bI<_bQ.length){
+    setTimeout(()=>{
+      if(confirm(`📤 SMS ${_bI}/${_bQ.length} sent to ${_bQ[_bI-1].n||'contact'}.\n\nNext: ${_bQ[_bI].n||'Unknown'}\n📱 ${_bQ[_bI].p}\n\nSend next SMS?`))
+        sendNextBulk();
+      else toast(`Paused after ${_bI} SMS`);
+    },1200);
+  } else {
+    setTimeout(()=>toast(`✅ All ${_bQ.length} SMS sent`),800);
+  }
 }
 
 /* ═══ ADD MENU ═══ */
